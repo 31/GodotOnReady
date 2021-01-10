@@ -2,9 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
+
     <!-- Package intentionally includes no output for any target framework. -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
     <NoWarn>NU5128</NoWarn>
+
+    <PackageDescription>GodotOnReady is a C# Source Generator that adds convenient onready-like features to your C# scripts in Godot Mono without any reflection.</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
