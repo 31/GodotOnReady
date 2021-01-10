@@ -52,7 +52,7 @@ Instead of writing this repetitive code:
 public class MyControl : Control
 {
   [Export] public NodePath ButtonPath { get; set; }
-  [OnReadyPath] private Button _button;
+  private Button _button;
 
   public override void _Ready()
   {
