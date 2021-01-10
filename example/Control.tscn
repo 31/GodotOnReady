@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MyControl.cs" type="Script" id=1]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+ButtonPath = NodePath("Button")
+TargetPath = NodePath("TextEdit")
+
+[node name="TextEdit" type="TextEdit" parent="."]
+margin_left = 30.0
+margin_top = 22.0
+margin_right = 188.0
+margin_bottom = 69.0
+
+[node name="Button" type="Button" parent="."]
+margin_left = 35.0
+margin_top = 84.0
+margin_right = 82.0
+margin_bottom = 104.0
+text = "Move"

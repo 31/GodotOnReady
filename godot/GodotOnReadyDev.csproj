@@ -1,0 +1,12 @@
+<Project Sdk="Godot.NET.Sdk/3.2.3">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\GodotOnReady.Attributes\GodotOnReady.Attributes.csproj" />
+    <ProjectReference Include="..\src\GodotOnReady.Generator\GodotOnReady.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,25 @@
+<Project>
+
+  <ItemGroup>
+    <SrcProject Include="src\*\*.csproj" />
+  </ItemGroup>
+
+  <Target Name="Pack">
+    <ItemGroup>
+      <!-- Run targets individually to make sure MSBuild can load restore outputs for pack. -->
+      <BuildTargets Include="Restore;Pack" />
+    </ItemGroup>
+
+    <MSBuild
+      Projects="@(SrcProject)"
+      Targets="%(BuildTargets.Identity)"
+      Properties="BuildTarget=%(BuildTargets.Identity)" />
+  </Target>
+
+  <Target Name="ClearLocalPackageCache">
+    <MSBuild
+      Projects="@(SrcProject)"
+      Targets="ClearLocalPackageCache" />
+  </Target>
+
+</Project>

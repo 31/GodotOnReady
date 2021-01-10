@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\</PackageOutputPath>
+    <Version>0.0.0-dev</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>31</Authors>
+    <Description>
+      GodotOnReady provides [OnReadyPath] and [OnReady] attributes to use in
+      Godot for more concise code.
+    </Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+  </ItemGroup>
+
+</Project>

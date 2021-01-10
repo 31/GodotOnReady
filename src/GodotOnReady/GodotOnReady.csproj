@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!-- Package intentionally includes no output for any target framework. -->
+    <NoWarn>NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GodotOnReady.Attributes\GodotOnReady.Attributes.csproj" />
+    <ProjectReference Include="..\..\src\GodotOnReady.Generator\GodotOnReady.Generator.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,7 @@
+<Project>
+
+  <PropertyGroup>
+    <ArtifactsDir>$(MSBuildThisFileDirectory)artifacts\</ArtifactsDir>
+  </PropertyGroup>
+
+</Project>

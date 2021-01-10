@@ -1,0 +1,23 @@
+<Project>
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <PackageOutputPath>$(ArtifactsDir)</PackageOutputPath>
+    <Version>0.0.0-dev</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>31</Authors>
+    <Description>
+      GodotOnReady is a C# Source Generator that adds convenient onready-like
+      features to your C# scripts in Godot Mono without any reflection.
+    </Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+  </ItemGroup>
+
+</Project>
