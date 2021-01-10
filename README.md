@@ -3,6 +3,11 @@
 **GodotOnReady** is a [C# Source Generator] that adds convenient `onready`-like
 features to your C# scripts in Godot Mono without any reflection.
 
+* [`[OnReadyPath]`](#onreadypath) - Load a strongly typed `Node` or `Node`
+  subclass into a field or property and automatically export a property for
+  configurability in your Godot scene.
+* [`[OnReady]`](#OnReady) - Execute any 0-argument method during `_Ready`.
+
 ## Prerequisites
 
 * Godot 3.2.3 (Mono version)  
