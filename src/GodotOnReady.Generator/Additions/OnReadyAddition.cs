@@ -17,6 +17,8 @@ namespace GodotOnReady.Generator.Additions
 			}
 		}
 
+		public override bool WritesOnReadyStatements => true;
+
 		public override void WriteOnReadyStatement(SourceStringBuilder g)
 		{
 			if (Method is null) return;
