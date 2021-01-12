@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using System;
 
 namespace GodotOnReady.Generator.Additions
 {
@@ -54,6 +55,22 @@ namespace GodotOnReady.Generator.Additions
 		public override bool WritesOnReadyStatements => true;
 
 		public override void WriteOnReadyStatement(SourceStringBuilder g)
+		{
+			if (MemberType is null) return;
+			if (MemberName is null) return;
+
+			if (OrNull)
+			{
+				g.Line("if (", MemberPathNameOrDefault, " != null)");
+				g.BlockBrace(() => WriteGetNodeLine(g));
+			}
+			else
+			{
+				WriteGetNodeLine(g);
+			}
+		}
+
+		private void WriteGetNodeLine(SourceStringBuilder g)
 		{
 			if (MemberType is null) return;
 			if (MemberName is null) return;
