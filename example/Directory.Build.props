@@ -8,7 +8,7 @@
   <PropertyGroup>
     <Authors>31</Authors>
     <Description>
-      GodotOnReady provides [OnReadyPath] and [OnReady] attributes to use in
+      GodotOnReady provides [OnReadyGet] and [OnReady] attributes to use in
       Godot for more concise code.
     </Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

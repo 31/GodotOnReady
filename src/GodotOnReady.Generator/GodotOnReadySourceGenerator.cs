@@ -33,9 +33,11 @@ namespace GodotOnReady.Generator
 				context.Compilation.GetTypeByMetadataName(fullName)
 				?? throw new Exception($"Can't find {fullName}");
 
-			var onReadyPathSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyPathAttribute");
+			var onReadyGetSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyGetAttribute");
 			var onReadySymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyAttribute");
-			var onReadyLoadSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyLoadAttribute");
+
+			var resourceSymbol = GetSymbolByName("Godot.Resource");
+			var nodeSymbol = GetSymbolByName("Godot.Node");
 
 			List<PartialClassAddition> additions = new();
 
@@ -63,17 +65,40 @@ namespace GodotOnReady.Generator
 					continue;
 				}
 
+				GettableBaseType GetGettableBaseType(ITypeSymbol memberType, ISymbol member)
+				{
+					if (memberType.IsOfBaseType(resourceSymbol)) return GettableBaseType.Resource;
+					if (memberType.IsOfBaseType(nodeSymbol)) return GettableBaseType.Node;
+
+					context.ReportDiagnostic(
+						Diagnostic.Create(
+							new DiagnosticDescriptor(
+								"GORSG0002",
+								"Inspection",
+								$"{member} is not a supported type: {memberType}. Expected a Resource or Node subclass.",
+								"GORSG.Parsing",
+								DiagnosticSeverity.Error,
+								true
+							),
+							member.Locations.FirstOrDefault()
+						)
+					);
+
+					return GettableBaseType.Node;
+				}
+
 				foreach (var propertySymbol in classSymbol.GetMembers().OfType<IPropertySymbol>())
 				{
 					foreach (var attribute in propertySymbol.GetAttributes())
 					{
-						if (Equal(attribute.AttributeClass, onReadyPathSymbol))
+						if (Equal(attribute.AttributeClass, onReadyGetSymbol))
 						{
-							additions.Add(new OnReadyPathAddition(attribute)
+							additions.Add(new OnReadyGetAddition(
+								attribute,
+								propertySymbol,
+								GetGettableBaseType(propertySymbol.Type, propertySymbol))
 							{
 								Class = classSymbol,
-								MemberType = propertySymbol.Type.ToFullDisplayString(),
-								MemberName = propertySymbol.Name,
 							});
 						}
 					}
@@ -83,24 +108,14 @@ namespace GodotOnReady.Generator
 				{
 					foreach (var attribute in fieldSymbol.GetAttributes())
 					{
-						if (Equal(attribute.AttributeClass, onReadyPathSymbol))
+						if (Equal(attribute.AttributeClass, onReadyGetSymbol))
 						{
-							additions.Add(new OnReadyPathAddition(attribute)
+							additions.Add(new OnReadyGetAddition(
+								attribute,
+								fieldSymbol,
+								GetGettableBaseType(fieldSymbol.Type, fieldSymbol))
 							{
 								Class = classSymbol,
-								MemberType = fieldSymbol.Type.ToFullDisplayString(),
-								MemberName = fieldSymbol.Name,
-								MemberPathName = GetPropertyNameForFieldName(fieldSymbol.Name) + "Path",
-							});
-						}
-						else if (Equal(attribute.AttributeClass, onReadyLoadSymbol))
-						{
-							additions.Add(new OnReadyLoadAddition(attribute)
-							{
-								Class = classSymbol,
-								MemberType = fieldSymbol.Type.ToFullDisplayString(),
-								MemberName = fieldSymbol.Name,
-								MemberPathName = GetPropertyNameForFieldName(fieldSymbol.Name) + "Resource",
 							});
 						}
 					}
@@ -192,17 +207,6 @@ namespace GodotOnReady.Generator
 		private static bool Equal(ISymbol? a, ISymbol? b)
 		{
 			return SymbolEqualityComparer.Default.Equals(a, b);
-		}
-
-		private static string GetPropertyNameForFieldName(string fieldName)
-		{
-			// Handle field name convention: _ prefix with lowercase name.
-			string pathName = fieldName.TrimStart('_');
-			pathName =
-				pathName[0].ToString().ToUpperInvariant() +
-				pathName.Substring(1);
-
-			return pathName;
 		}
 
 		private class OnReadyReceiver : ISyntaxReceiver

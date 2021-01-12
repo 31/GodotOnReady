@@ -3,8 +3,8 @@ using GodotOnReady.Attributes;
 
 public partial class MyControl : Control
 {
-	[OnReadyPath] private Button _button;
-	[OnReadyPath] private Control _target;
+	[OnReadyGet] private Button _button;
+	[OnReadyGet] private Control _target;
 
 	[OnReady]
 	public void RunOnReady()

@@ -30,5 +30,20 @@ namespace GodotOnReady.Generator.Util
 
 			return namespaceName;
 		}
+
+		public static bool IsOfBaseType(this ITypeSymbol? type, ITypeSymbol baseType)
+		{
+			while (type != null)
+			{
+				if (SymbolEqualityComparer.Default.Equals(type, baseType))
+				{
+					return true;
+				}
+
+				type = type.BaseType;
+			}
+
+			return false;
+		}
 	}
 }
