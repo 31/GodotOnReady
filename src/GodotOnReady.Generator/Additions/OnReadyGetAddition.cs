@@ -17,6 +17,8 @@ namespace GodotOnReady.Generator.Additions
 
 		public bool OrNull { get; set; }
 
+		public bool Private { get; set; }
+
 		private OnReadyGetAddition(
 			AttributeData attribute,
 			ITypeSymbol memberTypeSymbol,
@@ -31,21 +33,25 @@ namespace GodotOnReady.Generator.Additions
 
 			foreach (var constructorArg in attribute.ConstructorArguments)
 			{
-				if (constructorArg.Value is string v)
+				if (constructorArg.Value is string @default)
 				{
-					Default = v;
+					Default = @default;
 				}
 			}
 
 			foreach (var namedArg in attribute.NamedArguments)
 			{
-				if (namedArg.Key == "Default" && namedArg.Value.Value is string v)
+				if (namedArg.Key == "Default" && namedArg.Value.Value is string @default)
 				{
-					Default = v;
+					Default = @default;
 				}
-				else if (namedArg.Key == "OrNull" && namedArg.Value.Value is bool b)
+				else if (namedArg.Key == "OrNull" && namedArg.Value.Value is bool orNull)
 				{
-					OrNull = b;
+					OrNull = orNull;
+				}
+				else if (namedArg.Key == "Private" && namedArg.Value.Value is bool @private)
+				{
+					Private = @private;
 				}
 			}
 		}
@@ -72,10 +78,12 @@ namespace GodotOnReady.Generator.Additions
 
 		public override void WriteDeclaration(SourceStringBuilder g)
 		{
+			string export = Private ? "" : "[Export] ";
+
 			switch (BaseType)
 			{
 				case GettableBaseType.Resource:
-					g.Line("[Export] public ", MemberType, " ", ExportPropertyName);
+					g.Line(export, "public ", MemberType, " ", ExportPropertyName);
 					g.BlockBrace(() =>
 					{
 						g.Line("get => ", MemberName, ";");
@@ -87,7 +95,7 @@ namespace GodotOnReady.Generator.Additions
 					break;
 
 				case GettableBaseType.Node:
-					g.Line("[Export] public NodePath ", ExportPropertyName, " { get; set; }");
+					g.Line(export, "public NodePath ", ExportPropertyName, " { get; set; }");
 
 					if (Default is { Length: >0 })
 					{
