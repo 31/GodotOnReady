@@ -35,6 +35,7 @@ namespace GodotOnReady.Generator
 
 			var onReadyPathSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyPathAttribute");
 			var onReadySymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyAttribute");
+			var onReadyLoadSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyLoadAttribute");
 
 			List<PartialClassAddition> additions = new();
 
@@ -64,39 +65,44 @@ namespace GodotOnReady.Generator
 
 				foreach (var propertySymbol in classSymbol.GetMembers().OfType<IPropertySymbol>())
 				{
-					foreach (var attribute in propertySymbol
-						.GetAttributes()
-						.Where(a => Equal(a.AttributeClass, onReadyPathSymbol)))
+					foreach (var attribute in propertySymbol.GetAttributes())
 					{
-						additions.Add(new OnReadyPathAddition(attribute)
+						if (Equal(attribute.AttributeClass, onReadyPathSymbol))
 						{
-							Class = classSymbol,
-							MemberType = propertySymbol.Type.ToFullDisplayString(),
-							MemberName = propertySymbol.Name,
-						});
+							additions.Add(new OnReadyPathAddition(attribute)
+							{
+								Class = classSymbol,
+								MemberType = propertySymbol.Type.ToFullDisplayString(),
+								MemberName = propertySymbol.Name,
+							});
+						}
 					}
 				}
 
 				foreach (var fieldSymbol in classSymbol.GetMembers().OfType<IFieldSymbol>())
 				{
-					foreach (var attribute in fieldSymbol
-						.GetAttributes()
-						.Where(a => Equal(a.AttributeClass, onReadyPathSymbol)))
+					foreach (var attribute in fieldSymbol.GetAttributes())
 					{
-						// Handle field name convention: _ prefix with lowercase name.
-						string pathName = fieldSymbol.Name.TrimStart('_');
-						pathName =
-							pathName[0].ToString().ToUpperInvariant() +
-							pathName.Substring(1) +
-							"Path";
-
-						additions.Add(new OnReadyPathAddition(attribute)
+						if (Equal(attribute.AttributeClass, onReadyPathSymbol))
 						{
-							Class = classSymbol,
-							MemberType = fieldSymbol.Type.ToFullDisplayString(),
-							MemberName = fieldSymbol.Name,
-							MemberPathName = pathName,
-						});
+							additions.Add(new OnReadyPathAddition(attribute)
+							{
+								Class = classSymbol,
+								MemberType = fieldSymbol.Type.ToFullDisplayString(),
+								MemberName = fieldSymbol.Name,
+								MemberPathName = GetPropertyNameForFieldName(fieldSymbol.Name) + "Path",
+							});
+						}
+						else if (Equal(attribute.AttributeClass, onReadyLoadSymbol))
+						{
+							additions.Add(new OnReadyLoadAddition(attribute)
+							{
+								Class = classSymbol,
+								MemberType = fieldSymbol.Type.ToFullDisplayString(),
+								MemberName = fieldSymbol.Name,
+								MemberPathName = GetPropertyNameForFieldName(fieldSymbol.Name) + "Resource",
+							});
+						}
 					}
 				}
 
@@ -131,17 +137,37 @@ namespace GodotOnReady.Generator
 							addition.WriteDeclaration(source);
 						}
 
-						source.Line();
-						source.Line("public override void _Ready()");
-						source.BlockBrace(() =>
+						if (classAdditionGroup.Any(a => a.WritesConstructorStatements))
 						{
-							// OrderBy is a stable sort.
-							// Sort by Order, then by discovery order (implicitly).
-							foreach (var addition in classAdditionGroup.OrderBy(a => a.Order))
+							source.Line();
+							source.Line("public ", classAdditionGroup.Key.Name, "()");
+							source.BlockBrace(() =>
 							{
-								addition.WriteOnReadyStatement(source);
-							}
-						});
+								foreach (var addition in classAdditionGroup.OrderBy(a => a.Order))
+								{
+									addition.WriteConstructorStatement(source);
+								}
+
+								source.Line("Constructor();");
+							});
+
+							source.Line("partial void Constructor();");
+						}
+
+						if (classAdditionGroup.Any(a => a.WritesOnReadyStatements))
+						{
+							source.Line();
+							source.Line("public override void _Ready()");
+							source.BlockBrace(() =>
+							{
+								// OrderBy is a stable sort.
+								// Sort by Order, then by discovery order (implicitly).
+								foreach (var addition in classAdditionGroup.OrderBy(a => a.Order))
+								{
+									addition.WriteOnReadyStatement(source);
+								}
+							});
+						}
 					});
 				});
 
@@ -166,6 +192,17 @@ namespace GodotOnReady.Generator
 		private static bool Equal(ISymbol? a, ISymbol? b)
 		{
 			return SymbolEqualityComparer.Default.Equals(a, b);
+		}
+
+		private static string GetPropertyNameForFieldName(string fieldName)
+		{
+			// Handle field name convention: _ prefix with lowercase name.
+			string pathName = fieldName.TrimStart('_');
+			pathName =
+				pathName[0].ToString().ToUpperInvariant() +
+				pathName.Substring(1);
+
+			return pathName;
 		}
 
 		private class OnReadyReceiver : ISyntaxReceiver

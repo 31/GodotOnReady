@@ -1,0 +1,39 @@
+[gd_scene format=2]
+
+[node name="Subgui" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 111.0
+margin_bottom = 49.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Panel"]
+margin_left = 4.20447
+margin_top = 6.72717
+margin_right = 96.2045
+margin_bottom = 20.7272
+size_flags_vertical = 5
+text = "A simple label"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="Panel"]
+margin_left = 14.592
+margin_top = 28.0615
+margin_right = 100.592
+margin_bottom = 42.0615
+size_flags_vertical = 5
+text = "Another label"
+__meta__ = {
+"_edit_use_anchors_": false
+}
