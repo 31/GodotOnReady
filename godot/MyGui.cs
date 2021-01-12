@@ -6,6 +6,8 @@ public partial class MyGui : VBoxContainer
 {
 	[OnReadyPath(nameof(OptionalButton), OrNull = true)] public Button OptionalButton { get; set; }
 
+	[OnReadyPath(OrNull = true)] public Button FullyOptionalButton { get; set; }
+
 	[OnReadyPath("LineEdit")] public LineEdit AddLineBox { get; set; }
 
 	[OnReady]
