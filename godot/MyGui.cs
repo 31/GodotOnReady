@@ -4,11 +4,11 @@ using System;
 
 public partial class MyGui : VBoxContainer
 {
-	[OnReadyPath(nameof(OptionalButton), OrNull = true)] public Button OptionalButton { get; set; }
+	[OnReadyGet(nameof(OptionalButton), OrNull = true)] public Button OptionalButton { get; set; }
 
-	[OnReadyPath(OrNull = true)] public Button FullyOptionalButton { get; set; }
+	[OnReadyGet(OrNull = true)] public Button FullyOptionalButton { get; set; }
 
-	[OnReadyPath("LineEdit")] public LineEdit AddLineBox { get; set; }
+	[OnReadyGet("LineEdit")] public LineEdit AddLineBox { get; set; }
 
 	[OnReady]
 	public void InitializeInput()
@@ -18,7 +18,7 @@ public partial class MyGui : VBoxContainer
 		AddLineBox.GrabFocus();
 	}
 
-	[OnReadyPath] private Tree _myTree;
+	[OnReadyGet] private Tree _myTree;
 	private TreeItem _root;
 
 	[OnReady]

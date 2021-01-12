@@ -3,7 +3,7 @@
 **GodotOnReady** is a [C# Source Generator] that adds convenient `onready`-like
 features to your C# scripts in Godot Mono without any reflection.
 
-* [`[OnReadyPath]`](#onreadypath) - Load a strongly typed `Node` or `Node`
+* [`[OnReadyGet]`](#onreadyget) - Load a strongly typed `Node` or `Resource`
   subclass into a field or property and automatically export a property for
   configurability in your Godot scene.
 * [`[OnReady]`](#OnReady) - Execute any 0-argument method during `_Ready`.
@@ -44,7 +44,7 @@ Your Godot project's `.csproj` file should look like this when you're done:
 
 ## Usage
 
-### `[OnReadyPath]`
+### `[OnReadyGet]`
 
 Instead of writing this repetitive code:
 
@@ -66,15 +66,15 @@ Write this code instead to do the same thing:
 ```cs
 public partial class MyControl : Control
 {
-  [OnReadyPath] private Button _button;
+  [OnReadyGet] private Button _button;
 }
 ```
 
 The source generator turns `_button` into `ButtonPath` by trimming all leading
-`_` characters and capitalizing the first letter. The `[OnReadyPath]` generator
+`_` characters and capitalizing the first letter. The `[OnReadyGet]` generator
 works for fields and properties.
 
-### `[OnReadyPath(...)]` arguments:
+### `[OnReadyGet(...)]` arguments:
 
 * `Default = "..."` specifies a default for the backing property.
 * `OrNull = true` causes the generated `_Ready` method to use `GetNodeOrNull`
@@ -84,12 +84,12 @@ works for fields and properties.
 
 ### `[OnReady]`
 
-Using `OnReadyPath` generates a `public override void _Ready()` method. This
+Using `OnReadyGet` generates a `public override void _Ready()` method. This
 means you can't define it yourself. To run your own code during `_Ready`, mark
 any zero-argument method with `[OnReady]`:
 
 ```cs
-[OnReadyPath] private Button _button;
+[OnReadyGet] private Button _button;
 [OnReady] public void ConnectButtonOnReady()
 {
   _button.Connect("pressed", this, nameof(ButtonPressed));
@@ -105,7 +105,7 @@ be used.
   `_Ready` method. Default is `0`. Calls are sorted with this priority:
   * 1: `Order`, from low to high.
   * 2: Declaration order in the class file.
-  * `OnReadyPath` members are all initialized between the last `Order=-1` method
+  * `OnReadyGet` members are all initialized between the last `Order=-1` method
     and the first `Order=0` method, regardless of declaration order.
 
 
