@@ -9,6 +9,8 @@ namespace GodotOnReady.Attributes
 
 		public bool OrNull { get; set; }
 
+		public bool Private { get; set; }
+
 		public OnReadyGetAttribute(string @default = "")
 		{
 			Default = @default;

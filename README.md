@@ -79,6 +79,8 @@ works for fields and properties.
 * `Default = "..."` specifies a default for the backing property.
 * `OrNull = true` causes the generated `_Ready` method to use `GetNodeOrNull`
   instead of `GetNode`. This can be used to make **optional** connections.
+* `Private = true` removes the `[Export]` attribute. This means the value can't
+  be changed in the Godot editor, but the default is still loaded during Ready.
 
 ---
 
