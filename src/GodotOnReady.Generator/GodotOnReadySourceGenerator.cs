@@ -10,6 +10,14 @@ using System.Linq;
 
 namespace GodotOnReady.Generator
 {
+	public record AttributeSite(
+		INamedTypeSymbol Class,
+		AttributeData Attribute) { }
+
+	public record MemberAttributeSite(
+		MemberSymbol Member,
+		AttributeSite AttributeSite) { }
+
 	[Generator]
 	public class GodotOnReadySourceGenerator : ISourceGenerator
 	{
@@ -65,58 +73,49 @@ namespace GodotOnReady.Generator
 					continue;
 				}
 
-				GettableBaseType GetGettableBaseType(ITypeSymbol memberType, ISymbol member)
+				var members = Enumerable
+					.Concat(
+						classSymbol.GetMembers().OfType<IPropertySymbol>().Select(MemberSymbol.Create),
+						classSymbol.GetMembers().OfType<IFieldSymbol>().Select(MemberSymbol.Create))
+					.ToArray();
+
+				foreach (var member in members)
 				{
-					if (memberType.IsOfBaseType(resourceSymbol)) return GettableBaseType.Resource;
-					if (memberType.IsOfBaseType(nodeSymbol)) return GettableBaseType.Node;
-
-					context.ReportDiagnostic(
-						Diagnostic.Create(
-							new DiagnosticDescriptor(
-								"GORSG0002",
-								"Inspection",
-								$"{member} is not a supported type: {memberType}. Expected a Resource or Node subclass.",
-								"GORSG.Parsing",
-								DiagnosticSeverity.Error,
-								true
-							),
-							member.Locations.FirstOrDefault()
-						)
-					);
-
-					return GettableBaseType.Node;
-				}
-
-				foreach (var propertySymbol in classSymbol.GetMembers().OfType<IPropertySymbol>())
-				{
-					foreach (var attribute in propertySymbol.GetAttributes())
+					foreach (var attribute in member.Symbol
+						.GetAttributes()
+						.Where(a => Equal(a.AttributeClass, onReadyGetSymbol)))
 					{
-						if (Equal(attribute.AttributeClass, onReadyGetSymbol))
+						var site = new MemberAttributeSite(
+							member,
+							new AttributeSite(classSymbol, attribute));
+
+						if (member.Type.IsOfBaseType(resourceSymbol))
 						{
-							additions.Add(new OnReadyGetAddition(
-								attribute,
-								propertySymbol,
-								GetGettableBaseType(propertySymbol.Type, propertySymbol))
-							{
-								Class = classSymbol,
-							});
+							additions.Add(new OnReadyGetResourceAddition(site));
 						}
-					}
-				}
-
-				foreach (var fieldSymbol in classSymbol.GetMembers().OfType<IFieldSymbol>())
-				{
-					foreach (var attribute in fieldSymbol.GetAttributes())
-					{
-						if (Equal(attribute.AttributeClass, onReadyGetSymbol))
+						else if (member.Type.IsOfBaseType(nodeSymbol))
 						{
-							additions.Add(new OnReadyGetAddition(
-								attribute,
-								fieldSymbol,
-								GetGettableBaseType(fieldSymbol.Type, fieldSymbol))
-							{
-								Class = classSymbol,
-							});
+							additions.Add(new OnReadyGetNodeAddition(site));
+						}
+						else
+						{
+							string issue =
+								$"{member} is not a supported type: {member.Type}. " +
+								"Expected a Resource or Node subclass.";
+
+							context.ReportDiagnostic(
+								Diagnostic.Create(
+									new DiagnosticDescriptor(
+										"GORSG0002",
+										"Inspection",
+										issue,
+										"GORSG.Parsing",
+										DiagnosticSeverity.Error,
+										true
+									),
+									member.Symbol.Locations.FirstOrDefault()
+								)
+							);
 						}
 					}
 				}
@@ -127,11 +126,7 @@ namespace GodotOnReady.Generator
 						.GetAttributes()
 						.Where(a => Equal(a.AttributeClass, onReadySymbol)))
 					{
-						additions.Add(new OnReadyAddition(attribute)
-						{
-							Class = classSymbol,
-							Method = methodSymbol,
-						});
+						additions.Add(new OnReadyAddition(methodSymbol, attribute, classSymbol));
 					}
 				}
 			}

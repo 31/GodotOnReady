@@ -10,11 +10,14 @@ namespace GodotOnReady.Generator
 
 		public void Line(params string[] parts)
 		{
-			_sourceBuilder.Append(_indentPrefix);
-
-			foreach (var s in parts)
+			if (parts.Length != 0)
 			{
-				_sourceBuilder.Append(s);
+				_sourceBuilder.Append(_indentPrefix);
+
+				foreach (var s in parts)
+				{
+					_sourceBuilder.Append(s);
+				}
 			}
 
 			_sourceBuilder.AppendLine();
