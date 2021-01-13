@@ -100,8 +100,8 @@ namespace GodotOnReady.Generator
 						else
 						{
 							string issue =
-								$"{member} is not a supported type: {member.Type}. " +
-								"Expected a Resource or Node subclass.";
+								$"The type '{member.Type}' of '{member.Symbol}' is not supported." +
+								" Expected a Resource or Node subclass.";
 
 							context.ReportDiagnostic(
 								Diagnostic.Create(
