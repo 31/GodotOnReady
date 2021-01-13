@@ -4,10 +4,14 @@ namespace GodotOnReady.Generator.Additions
 {
 	public abstract class PartialClassAddition
 	{
-		public INamedTypeSymbol? Class { get; set; }
+		protected PartialClassAddition(INamedTypeSymbol @class)
+		{
+			Class = @class;
+		}
+
+		public INamedTypeSymbol Class { get; }
 
 		public int Order { get; set; }
-
 
 		public virtual void WriteDeclaration(SourceStringBuilder g) { }
 
