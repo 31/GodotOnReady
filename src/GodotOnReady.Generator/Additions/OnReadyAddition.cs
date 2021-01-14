@@ -27,6 +27,7 @@ namespace GodotOnReady.Generator.Additions
 
 		public override void WriteOnReadyStatement(SourceStringBuilder g)
 		{
+			g.Line();
 			g.Line(Method.Name, "();");
 		}
 	}
