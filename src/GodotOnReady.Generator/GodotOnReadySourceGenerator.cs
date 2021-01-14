@@ -43,6 +43,8 @@ namespace GodotOnReady.Generator
 
 			var onReadyGetSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyGetAttribute");
 			var onReadySymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyAttribute");
+			var generateDataSelectorEnumSymbol =
+				GetSymbolByName("GodotOnReady.Attributes.GenerateDataSelectorEnumAttribute");
 
 			var resourceSymbol = GetSymbolByName("Godot.Resource");
 			var nodeSymbol = GetSymbolByName("Godot.Node");
@@ -71,6 +73,19 @@ namespace GodotOnReady.Generator
 						)
 					);
 					continue;
+				}
+
+				foreach (var attribute in classSymbol.GetAttributes()
+					.Where(a => Equal(a.AttributeClass, generateDataSelectorEnumSymbol)))
+				{
+					var fields = classSymbol.GetMembers()
+						.OfType<IFieldSymbol>()
+						.Where(f => f.IsReadOnly && f.IsStatic)
+						.ToArray();
+
+					additions.Add(new DataSelectorEnumAddition(
+						fields,
+						new AttributeSite(classSymbol, attribute)));
 				}
 
 				var members = Enumerable
@@ -144,10 +159,10 @@ namespace GodotOnReady.Generator
 					{
 						foreach (var addition in classAdditionGroup)
 						{
-							addition.WriteDeclaration(source);
+							addition.DeclarationWriter?.Invoke(source);
 						}
 
-						if (classAdditionGroup.Any(a => a.WritesConstructorStatements))
+						if (classAdditionGroup.Any(a => a.ConstructorStatementWriter is not null))
 						{
 							source.Line();
 							source.Line("public ", classAdditionGroup.Key.Name, "()");
@@ -155,7 +170,7 @@ namespace GodotOnReady.Generator
 							{
 								foreach (var addition in classAdditionGroup.OrderBy(a => a.Order))
 								{
-									addition.WriteConstructorStatement(source);
+									addition.ConstructorStatementWriter?.Invoke(source);
 								}
 
 								source.Line("Constructor();");
@@ -164,7 +179,7 @@ namespace GodotOnReady.Generator
 							source.Line("partial void Constructor();");
 						}
 
-						if (classAdditionGroup.Any(a => a.WritesOnReadyStatements))
+						if (classAdditionGroup.Any(a => a.OnReadyStatementWriter is not null))
 						{
 							source.Line();
 							source.Line("public override void _Ready()");
@@ -174,11 +189,16 @@ namespace GodotOnReady.Generator
 								// Sort by Order, then by discovery order (implicitly).
 								foreach (var addition in classAdditionGroup.OrderBy(a => a.Order))
 								{
-									addition.WriteOnReadyStatement(source);
+									addition.OnReadyStatementWriter?.Invoke(source);
 								}
 							});
 						}
 					});
+
+					foreach (var addition in classAdditionGroup)
+					{
+						addition.OutsideClassStatementWriter?.Invoke(source);
+					}
 				});
 
 				string escapedNamespace =

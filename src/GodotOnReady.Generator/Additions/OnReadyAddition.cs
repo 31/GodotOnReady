@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using System;
 
 namespace GodotOnReady.Generator.Additions
 {
@@ -23,12 +24,10 @@ namespace GodotOnReady.Generator.Additions
 			}
 		}
 
-		public override bool WritesOnReadyStatements => true;
-
-		public override void WriteOnReadyStatement(SourceStringBuilder g)
+		public override Action<SourceStringBuilder>? OnReadyStatementWriter => g =>
 		{
 			g.Line();
 			g.Line(Method.Name, "();");
-		}
+		};
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using System;
 
 namespace GodotOnReady.Generator.Additions
 {
@@ -13,12 +14,10 @@ namespace GodotOnReady.Generator.Additions
 
 		public int Order { get; set; }
 
-		public virtual void WriteDeclaration(SourceStringBuilder g) { }
+		public virtual Action<SourceStringBuilder>? DeclarationWriter => null;
+		public virtual Action<SourceStringBuilder>? ConstructorStatementWriter => null;
+		public virtual Action<SourceStringBuilder>? OnReadyStatementWriter => null;
 
-		public virtual bool WritesConstructorStatements => false;
-		public virtual void WriteConstructorStatement(SourceStringBuilder g) { }
-
-		public virtual bool WritesOnReadyStatements => false;
-		public virtual void WriteOnReadyStatement(SourceStringBuilder g) { }
+		public virtual Action<SourceStringBuilder>? OutsideClassStatementWriter => null;
 	}
 }

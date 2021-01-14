@@ -1,5 +1,6 @@
 using Godot;
 using GodotOnReady.Attributes;
+using GodotOnReadyDev;
 using System;
 
 public partial class MyGui : VBoxContainer
@@ -59,5 +60,11 @@ public partial class MyGui : VBoxContainer
 
 			checkRoot = nest;
 		}
+	}
+
+	[OnReady] public void TryEnum()
+	{
+		GD.Print(DemoEnum.A, ": ", DemoEnum.A.GetData().Extended);
+		GD.Print(DemoEnum.B, ": ", DemoEnum.B.GetData().Extended);
 	}
 }
