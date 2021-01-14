@@ -74,13 +74,21 @@ The source generator turns `_button` into `ButtonPath` by trimming all leading
 `_` characters and capitalizing the first letter. The `[OnReadyGet]` generator
 works for fields and properties.
 
+It also works for `Resource` subclasses:
+
+```cs
+[OnReadyGet("res://Scene.tscn")] public PackedScene _scene;
+```
+
 ### `[OnReadyGet(...)]` arguments:
 
-* `Default = "..."` specifies a default for the backing property.
-* `OrNull = true` causes the generated `_Ready` method to use `GetNodeOrNull`
-  instead of `GetNode`. This can be used to make **optional** connections.
-* `Private = true` removes the `[Export]` attribute. This means the value can't
-  be changed in the Godot editor, but the default is still loaded during Ready.
+* `Default = "..."` specifies a default for `ButtonPath`.
+* `OrNull = true` causes the `_Ready()` method to use `GetNodeOrNull<Button>`
+  instead of `GetNode<Button>`. It also adds a not-null check on `ButtonPath` to
+  make sure no exceptions are thrown. This can be used to make **optional**
+  connections.
+* `Private = true` removes the `[Export]` attribute from `ButtonPath`, hiding it
+  from the editor.
 
 ---
 
@@ -98,15 +106,23 @@ any zero-argument method with `[OnReady]`:
 }
 ```
 
-`_button` gets set up before `ConnectButtonOnReady` is called, so its value can
-be used.
+The generated `_Ready()` method will then be:
+
+```cs
+public override void _Ready()
+{
+  _button = GetNode<Button>(ButtonPath);
+  ConnectButtonOnReady();
+}
+```
 
 ### `[OnReady(...)]` arguments:
 
 * `Order = 0` defines a custom order for methods to be called in the generated
-  `_Ready` method. Default is `0`. Calls are sorted with this priority:
-  * 1: `Order`, from low to high.
-  * 2: Declaration order in the class file.
+  `_Ready` method. Default is `0`.
+  * Calls are sorted with this priority:
+    * (1) `Order`, from low to high.
+    * (2) Declaration order in the class file.
   * `OnReadyGet` members are all initialized between the last `Order=-1` method
     and the first `Order=0` method, regardless of declaration order.
 
