@@ -1,5 +1,6 @@
 ﻿using GodotOnReady.Generator.Util;
 using Microsoft.CodeAnalysis.CSharp;
+using System;
 
 namespace GodotOnReady.Generator.Additions
 {
@@ -7,7 +8,7 @@ namespace GodotOnReady.Generator.Additions
 	{
 		public OnReadyGetNodeAddition(MemberAttributeSite site) : base(site) { }
 
-		public override void WriteDeclaration(SourceStringBuilder g)
+		public override Action<SourceStringBuilder>? DeclarationWriter => g =>
 		{
 			string export = Private ? "" : "[Export] ";
 
@@ -21,11 +22,9 @@ namespace GodotOnReady.Generator.Additions
 					g.Line("= ", SyntaxFactory.Literal(Default).ToString(), ";");
 				});
 			}
-		}
+		};
 
-		public override bool WritesOnReadyStatements => true;
-
-		public override void WriteOnReadyStatement(SourceStringBuilder g)
+		public override Action<SourceStringBuilder>? OnReadyStatementWriter => g =>
 		{
 			g.Line();
 			if (OrNull)
@@ -38,7 +37,7 @@ namespace GodotOnReady.Generator.Additions
 			{
 				WriteGetNodeLine(g);
 			}
-		}
+		};
 
 		private void WriteGetNodeLine(SourceStringBuilder g)
 		{

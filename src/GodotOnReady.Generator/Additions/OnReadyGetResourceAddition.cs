@@ -1,5 +1,6 @@
 ﻿using GodotOnReady.Generator.Util;
 using Microsoft.CodeAnalysis.CSharp;
+using System;
 
 namespace GodotOnReady.Generator.Additions
 {
@@ -9,7 +10,7 @@ namespace GodotOnReady.Generator.Additions
 
 		private bool IsGeneratingAssignment => Default is { Length: >0 };
 
-		public override void WriteDeclaration(SourceStringBuilder g)
+		public override Action<SourceStringBuilder>? DeclarationWriter => g =>
 		{
 			string export = Private ? "" : "[Export] ";
 
@@ -22,52 +23,50 @@ namespace GodotOnReady.Generator.Additions
 			});
 
 			g.Line("private bool _hasBeenSet", Member.Name, ";");
-		}
+		};
 
-		public override bool WritesConstructorStatements => IsGeneratingAssignment;
-
-		public override void WriteConstructorStatement(SourceStringBuilder g)
-		{
-			if (!IsGeneratingAssignment) return;
-
-			g.Line("if (Engine.EditorHint)");
-			g.BlockBrace(() =>
-			{
-				WriteAssignment(g);
-			});
-		}
-
-		public override bool WritesOnReadyStatements => true;
-
-		public override void WriteOnReadyStatement(SourceStringBuilder g)
-		{
-			if (IsGeneratingAssignment || !OrNull)
-			{
-				g.Line();
-			}
-
-			if (IsGeneratingAssignment)
-			{
-				g.Line("if (!_hasBeenSet", Member.Name, ")");
-				g.BlockBrace(() =>
+		public override Action<SourceStringBuilder>? ConstructorStatementWriter =>
+			IsGeneratingAssignment
+				? g =>
 				{
-					WriteAssignment(g);
-				});
-			}
+					g.Line("if (Engine.EditorHint)");
+					g.BlockBrace(() =>
+					{
+						WriteAssignment(g);
+					});
+				}
+				: null;
 
-			if (!OrNull)
-			{
-				g.Line("if (", Member.Name, " == null)");
-				g.BlockBrace(() =>
+		public override Action<SourceStringBuilder>? OnReadyStatementWriter =>
+			IsGeneratingAssignment || !OrNull
+				? g =>
 				{
-					g.Line(
-						"throw new NullReferenceException($\"",
-						Member.Name, " is null, but OnReadyLoad not OrNull=true. (Default = '",
-						Default ?? "null", "') ",
-						"(Node = '{Name}' '{this}')\");");
-				});
-			}
-		}
+					g.Line();
+
+					if (IsGeneratingAssignment)
+					{
+						g.Line("if (!_hasBeenSet", Member.Name, ")");
+						g.BlockBrace(() =>
+						{
+							WriteAssignment(g);
+						});
+					}
+
+					if (!OrNull)
+					{
+						g.Line("if (", Member.Name, " == null)");
+						g.BlockBrace(() =>
+						{
+							g.Line(
+								"throw new NullReferenceException($\"",
+								Member.Name,
+								" is null, but OnReadyLoad not OrNull=true. (Default = '",
+								Default ?? "null", "') ",
+								"(Node = '{Name}' '{this}')\");");
+						});
+					}
+				}
+				: null;
 
 		private void WriteAssignment(SourceStringBuilder g)
 		{
