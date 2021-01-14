@@ -37,7 +37,7 @@ Your Godot project's `.csproj` file should look like this when you're done:
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GodotOnReady" Version="0.0.1" />
+    <PackageReference Include="GodotOnReady" Version="0.0.4" />
   </ItemGroup>
 </Project>
 ```
