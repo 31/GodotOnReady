@@ -47,6 +47,12 @@ Your Godot project's `.csproj` file should look like this when you're done:
 </Project>
 ```
 
+You may need to restart your IDE to navigate to generated sources and for the
+generated code to affect code completion.
+
+For advanced alternatives, see
+[/docs/advanced-setup.md](/docs/advanced-setup.md).
+
 ## Usage
 
 ### `[OnReadyGet]`
@@ -211,6 +217,12 @@ If you use C# 9.0, you can also use *target-typed new* to shrink this:
 `Bed = new SleepPreferenceData { Comfort = 1f }`  
 down to this:  
 `Bed = new() { Comfort = 1f }`.
+
+---
+
+# License
+
+GodotOnReady is licensed under the [MIT license](LICENSE).
 
 
 [C# Source Generator]: https://devblogs.microsoft.com/dotnet/new-c-source-generator-samples/

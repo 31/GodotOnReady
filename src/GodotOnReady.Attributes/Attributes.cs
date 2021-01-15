@@ -1,5 +1,8 @@
 ﻿using System;
 
+// All GodotOnReady attributes are in this single file to make it easy to copy directly into a game
+// project and avoid a DLL dependency.
+
 namespace GodotOnReady.Attributes
 {
 	/// <summary>
@@ -33,6 +36,38 @@ namespace GodotOnReady.Attributes
 		public OnReadyGetAttribute(string @default = "")
 		{
 			Default = @default;
+		}
+	}
+
+	/// <summary>
+	/// Calls the applied 0-argument method during the generated '_Ready' method.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Method, Inherited = false)]
+	public sealed class OnReadyAttribute : Attribute
+	{
+		/// <summary>
+		/// Sets the relative order of this method vs. others with this attribute. When deciding
+		/// which order to call OnReady methods, the generator first sorts by Order, then by
+		/// declaration order. All OnReadyGet initialization happens after the last '-1' Order
+		/// OnReady and before the first '0' Order OnReady.
+		/// </summary>
+		public int Order { get; set; }
+	}
+
+	/// <summary>
+	/// Generates an enum with one entry for each static readonly field in the marked class.
+	/// Generates a lookup method on the marked class that returns the field based on the enum entry
+	/// value.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+	public sealed class GenerateDataSelectorEnumAttribute : Attribute
+	{
+		public string Name { get; }
+
+		/// <param name="name">The name of the enum to generate.</param>
+		public GenerateDataSelectorEnumAttribute(string name)
+		{
+			Name = name;
 		}
 	}
 }
