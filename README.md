@@ -8,6 +8,11 @@ features to your C# scripts in Godot Mono without any reflection.
   configurability in your Godot scene.
 * [`[OnReady]`](#OnReady) - Execute any 0-argument method during `_Ready`.
 
+Bonus feature:
+
+* [`[GenerateDataSelectorEnum]`](#GenerateDataSelectorEnum) - Generate an enum
+  where each value is strongly associated with custom data.
+
 ## Prerequisites
 
 * Godot 3.2.3 (Mono version)  
@@ -125,6 +130,87 @@ public override void _Ready()
     * (2) Declaration order in the class file.
   * `OnReadyGet` members are all initialized between the last `Order=-1` method
     and the first `Order=0` method, regardless of declaration order.
+
+---
+
+### `[GenerateDataSelectorEnum]`
+
+This utility allows you to concisely add some custom data to each member of an
+`enum`. An `enum` works nicely to show a choice in the Godot editor while
+authoring a scene:
+
+```cs
+public enum SleepPreference { Bed, Floor, Microgravity }
+public partial class Person : Node2D {
+  [Export] public SleepPreference Pref { get; set; }
+  [OnReady] public void PrintPref() {
+    GD.Print(Pref);
+  }
+}
+```
+
+Let's add a `float Comfort` factor to each enum member. Here's a way that uses
+`switch` (avoiding unnecessary Dictionary or attribute lookups) and provides a
+convenient `.GetData` method that can be called on the enum:
+
+```cs
+public enum SleepPreference { Bed, Floor, Microgravity }
+public class SleepPreferenceData {
+  private static readonly SleepPreferenceData
+    Bed = new SleepPreferenceData { Comfort = 1f },
+    Floor = new SleepPreferenceData { Comfort = 0.6f },
+    Microgravity = new SleepPreferenceData { Comfort = 0.6f };
+  public static SleepPreferenceData Get(SleepPreference p) {
+    switch(p) {
+      case SleepPreference.Bed: return Bed;
+      case SleepPreference.Floor: return Floor;
+      case SleepPreference.Microgravity: return Microgravity;
+    }
+    throw new ArgumentOutOfRangeException("key");
+  }
+  public float Comfort { get; set; }
+}
+public static class SleepPreferenceExtensions {
+  public static SleepPreferenceData GetData(this SleepPreference p) => SleepPreferenceData.Get(p);
+}
+```
+
+Usage:
+
+```cs
+public partial class Person : Node2D {
+  [Export] public SleepPreference Pref { get; set; }
+  [OnReady] public void PrintPref() {
+    GD.Print(Pref);
+    GD.Print(Pref.GetData().Comfort);
+  }
+}
+```
+
+That's fine, but every value name in `SleepPreference` is written four times, in
+a few separate sections of the code. To add a new enum value, every place needs
+to be updated in sync.
+
+Instead, use `GenerateDataSelectorEnum` to generate all of the code based on the
+data object field names:
+
+```cs
+[GenerateDataSelectorEnum("SleepPreference")]
+public partial class SleepPreferenceData {
+  private static readonly SleepPreferenceData
+    Bed = new SleepPreferenceData { Comfort = 1f },
+    Floor = new SleepPreferenceData { Comfort = 0.6f },
+    Microgravity = new SleepPreferenceData { Comfort = 0.6f };
+  public float Comfort { get; set; }
+}
+```
+
+To add a new enum value, just add another field to `SleepPreferenceData`.
+
+If you use C# 9.0, you can also use *target-typed new* to shrink this:  
+`Bed = new SleepPreferenceData { Comfort = 1f }`  
+down to this:  
+`Bed = new() { Comfort = 1f }`.
 
 
 [C# Source Generator]: https://devblogs.microsoft.com/dotnet/new-c-source-generator-samples/
