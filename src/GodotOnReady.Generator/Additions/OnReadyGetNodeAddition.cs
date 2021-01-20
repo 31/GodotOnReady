@@ -27,15 +27,13 @@ namespace GodotOnReady.Generator.Additions
 		public override Action<SourceStringBuilder>? OnReadyStatementWriter => g =>
 		{
 			g.Line();
-			if (OrNull)
+
+			g.Line("if (", ExportPropertyName, " != null)");
+			g.BlockBrace(() => WriteGetNodeLine(g));
+
+			if (!OrNull)
 			{
-				g.Line("if (", ExportPropertyName, " != null)");
-				g.BlockBrace(() => WriteGetNodeLine(g));
-				g.Line();
-			}
-			else
-			{
-				WriteGetNodeLine(g);
+				WriteMemberNullCheck(g, ExportPropertyName);
 			}
 		};
 

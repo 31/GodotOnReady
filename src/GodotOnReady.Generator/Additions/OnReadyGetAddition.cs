@@ -51,5 +51,20 @@
 				}
 			}
 		}
+
+		protected void WriteMemberNullCheck(SourceStringBuilder g, string exportMemberName)
+		{
+			g.Line("if (", Member.Name, " == null)");
+			g.BlockBrace(() =>
+			{
+				g.Line(
+					"throw new NullReferenceException($\"",
+					"'{((Resource)GetScript()).ResourcePath}' member '",
+					Member.Name,
+					"' is unexpectedly null in '{GetPath()}', '{this}'. Ensure '",
+					exportMemberName,
+					"' is set correctly, or set [OnReadyGet(OrNull = true)] to allow null.\");");
+			});
+		}
 	}
 }

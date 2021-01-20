@@ -11,6 +11,12 @@ public partial class MyGui : VBoxContainer
 
 	[OnReadyGet("LineEdit")] public LineEdit AddLineBox { get; set; }
 
+	// [OnReadyGet] private Button _nullNode;
+	// [OnReadyGet] private Texture _nullResource;
+
+	// [OnReadyGet("a/b/c")] private Button _notFoundNode;
+	// [OnReadyGet("a/b/d")] private Texture _notFoundResource;
+
 	[OnReady]
 	public void InitializeInput()
 	{
