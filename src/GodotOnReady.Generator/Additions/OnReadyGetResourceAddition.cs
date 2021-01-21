@@ -54,16 +54,7 @@ namespace GodotOnReady.Generator.Additions
 
 					if (!OrNull)
 					{
-						g.Line("if (", Member.Name, " == null)");
-						g.BlockBrace(() =>
-						{
-							g.Line(
-								"throw new NullReferenceException($\"",
-								Member.Name,
-								" is null, but OnReadyLoad not OrNull=true. (Default = '",
-								Default ?? "null", "') ",
-								"(Node = '{Name}' '{this}')\");");
-						});
+						WriteMemberNullCheck(g, ExportPropertyName);
 					}
 				}
 				: null;
