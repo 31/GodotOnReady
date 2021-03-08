@@ -18,7 +18,7 @@ Bonus feature:
 * Godot 3.2.3 (Mono version)  
   <https://godotengine.org/download>
 
-* .NET SDK 5.0.102  
+* .NET SDK 5.0 or greater
   <https://dotnet.microsoft.com/download>
 
 * Set Godot to use the `dotnet CLI` Build Tool  
