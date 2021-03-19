@@ -15,7 +15,7 @@ Bonus feature:
 
 ## Prerequisites
 
-* Godot 3.2.3 (Mono version)  
+* Godot 3.2.3 or greater (Mono version)  
   <https://godotengine.org/download>
 
 * .NET SDK 5.0 or greater
