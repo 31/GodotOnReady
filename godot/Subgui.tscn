@@ -10,8 +10,8 @@ __meta__ = {
 }
 
 [node name="Panel" type="Panel" parent="."]
-margin_right = 111.0
-margin_bottom = 49.0
+margin_right = 210.0
+margin_bottom = 23.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -28,10 +28,10 @@ __meta__ = {
 }
 
 [node name="Label2" type="Label" parent="Panel"]
-margin_left = 14.592
-margin_top = 28.0615
-margin_right = 100.592
-margin_bottom = 42.0615
+margin_left = 113.818
+margin_top = 3.67558
+margin_right = 199.818
+margin_bottom = 17.6756
 size_flags_vertical = 5
 text = "Another label"
 __meta__ = {

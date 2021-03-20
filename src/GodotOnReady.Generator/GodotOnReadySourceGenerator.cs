@@ -185,6 +185,8 @@ namespace GodotOnReady.Generator
 							source.Line("public override void _Ready()");
 							source.BlockBrace(() =>
 							{
+								source.Line("base._Ready();");
+
 								// OrderBy is a stable sort.
 								// Sort by Order, then by discovery order (implicitly).
 								foreach (var addition in classAdditionGroup.OrderBy(a => a.Order))
