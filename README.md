@@ -3,9 +3,9 @@
 **GodotOnReady** is a [C# Source Generator] that adds convenient `onready`-like
 features to your C# scripts in Godot Mono without any reflection.
 
-* [`[OnReadyGet]`](#onreadyget) - Load a strongly typed `Node` or `Resource`
-  subclass into a field or property and automatically export a property for
-  configurability in your Godot scene.
+* [`[OnReadyGet]`](#onreadyget) - Load a `Node` or `Resource` subclass into a
+  field or property. Automatically exports a property so you can use the Godot
+  editor to configure the path it loads.
 * [`[OnReady]`](#OnReady) - Execute any 0-argument method during `_Ready`.
 
 Bonus feature:
@@ -50,7 +50,7 @@ Your Godot project's `.csproj` file should look like this when you're done:
 ```
 
 You may need to restart your IDE to navigate to generated sources and for the
-generated code to affect code completion.
+generated code to show up in code completion/intellisense.
 
 For advanced alternatives, see
 [/docs/advanced-setup.md](/docs/advanced-setup.md).
@@ -83,9 +83,10 @@ public partial class MyControl : Control
 }
 ```
 
-The source generator turns `_button` into `ButtonPath` by trimming all leading
-`_` characters and capitalizing the first letter. The `[OnReadyGet]` generator
-works for fields and properties.
+The source generator figures out that the exported property should be
+`ButtonPath` by taking `_button`, trimming the leading `_` character, and
+capitalizing the first letter. The `[OnReadyGet]` generator works for fields and
+properties.
 
 It also works for `Resource` subclasses:
 
@@ -246,6 +247,35 @@ down to this:
 `Bed = new() { Comfort = 1f }`.
 
 ---
+
+# Troubleshooting
+
+### error CS0111: Type '***' already defines a member called '_Ready' with the same parameter types
+
+When you use `[OnReadyGet]`, you can't write `public override void _Ready()` in
+your own code, because GodotOnReady generated it already. To run your own code
+in the generated `_Ready()` method, use [`[OnReady]`](#OnReady).
+
+### error CS0260: Missing partial modifier on declaration of type '***'; another partial declaration of this type exists
+
+Your class is most likely missing the `partial` modifier. The declaration
+should look like this:
+
+```cs
+public partial class MyNode : Node
+```
+
+### It isn't working! My variables are null, and no new properties show up in Godot.
+
+First, hit the `Build` button at the top-right of the Godot editor to make sure
+your build is up to date. That might make the properties show up.
+
+Then, make sure you are using [.NET SDK version 5.0](#Prerequisites) or newer.
+If you run `dotnet --version` in a console window, it will show you what version
+of the SDK you have.
+
+If that doesn't work, please file an issue. Include the output of `dotnet
+--info`, the Godot build log, and if possible, the project.
 
 # License
 
