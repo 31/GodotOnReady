@@ -3,7 +3,7 @@ using GodotOnReady.Attributes;
 
 public partial class SpawnButton : Button
 {
-	[OnReadyGet("res://Subgui.tscn", Private = true)] public PackedScene _scene;
+	[OnReadyGet("res://Subgui.tscn")] public PackedScene _scene;
 
 	public virtual void OnPress()
 	{

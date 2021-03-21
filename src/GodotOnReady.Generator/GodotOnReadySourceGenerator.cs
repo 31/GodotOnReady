@@ -12,11 +12,11 @@ namespace GodotOnReady.Generator
 {
 	public record AttributeSite(
 		INamedTypeSymbol Class,
-		AttributeData Attribute) { }
+		AttributeData Attribute);
 
 	public record MemberAttributeSite(
 		MemberSymbol Member,
-		AttributeSite AttributeSite) { }
+		AttributeSite AttributeSite);
 
 	[Generator]
 	public class GodotOnReadySourceGenerator : ISourceGenerator

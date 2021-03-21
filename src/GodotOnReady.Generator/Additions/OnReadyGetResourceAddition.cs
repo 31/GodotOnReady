@@ -8,11 +8,13 @@ namespace GodotOnReady.Generator.Additions
 	{
 		public OnReadyGetResourceAddition(MemberAttributeSite site) : base(site) { }
 
-		private bool IsGeneratingAssignment => Default is { Length: >0 };
+		private bool IsGeneratingAssignment => Path is { Length: >0 };
 
 		public override Action<SourceStringBuilder>? DeclarationWriter => g =>
 		{
-			string export = Private ? "" : "[Export] ";
+			string export = Path is { Length: >0 } || Export
+				? "[Export] "
+				: "";
 
 			g.Line();
 			g.Line(export, "public ", Member.Type.ToFullDisplayString(), " ", ExportPropertyName);
@@ -63,7 +65,7 @@ namespace GodotOnReady.Generator.Additions
 		{
 			g.Line(Member.Name, " = GD.Load",
 				"<", Member.Type.ToFullDisplayString(), ">",
-				"(", SyntaxFactory.Literal(Default ?? "").ToString(), ");");
+				"(", SyntaxFactory.Literal(Path ?? "").ToString(), ");");
 		}
 
 		protected virtual string ExportPropertyName => SuffixlessExportPropertyName + "Resource";
