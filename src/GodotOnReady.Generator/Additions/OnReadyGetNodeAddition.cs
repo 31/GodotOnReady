@@ -10,7 +10,7 @@ namespace GodotOnReady.Generator.Additions
 
 		public override Action<SourceStringBuilder>? DeclarationWriter => g =>
 		{
-			string export = Path is { Length: >0 } || Export
+			string export = Path is not { Length: >0 } || Export
 				? "[Export] "
 				: "";
 
