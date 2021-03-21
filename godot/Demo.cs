@@ -17,13 +17,13 @@ public partial class Demo : Node
 
 	[OnReadyGet("Example")] public Node _exampleDefault;
 	[OnReadyGet("Example", OrNull = true)] public Node _exampleDefaultOrNullTrue;
-	[OnReadyGet("Example", Private = true)] public Node _exampleDefaultPrivateTrue;
-	[OnReadyGet("Example", OrNull = true, Private = true)] public Node _exampleDefaultOrNullPrivateTrue;
+	[OnReadyGet("Example", Export = true)] public Node _exampleDefaultExportTrue;
+	[OnReadyGet("Example", OrNull = true, Export = true)] public Node _exampleDefaultOrNullExportTrue;
 
 	[OnReadyGet("res://tex.png")] public PackedScene _exampleDefaultPackedScene;
 	[OnReadyGet("res://tex.png", OrNull = true)] public PackedScene _exampleDefaultOrNullTruePackedScene;
-	[OnReadyGet("res://tex.png", Private = true)] public PackedScene _exampleDefaultPrivateTruePackedScene;
-	[OnReadyGet("res://tex.png", OrNull = true, Private = true)] public PackedScene _exampleDefaultOrNullPrivateTruePackedScene;
+	[OnReadyGet("res://tex.png", Export = true)] public PackedScene _exampleDefaultExportTruePackedScene;
+	[OnReadyGet("res://tex.png", OrNull = true, Export = true)] public PackedScene _exampleDefaultOrNullExportTruePackedScene;
 
 	[OnReady(Order = -5)] public void OrderMinus5DefinedEarly() { }
 }

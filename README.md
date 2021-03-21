@@ -10,7 +10,7 @@ features to your C# scripts in Godot Mono without any reflection.
 
 Bonus feature:
 
-* [`[GenerateDataSelectorEnum]`](#GenerateDataSelectorEnum) - Generate an enum
+* [`[GenerateDataSelectorEnum]`](docs/GenerateDataSelectorEnum.md) - Generate an enum
   where each value is strongly associated with custom data.
 
 ## Prerequisites
@@ -83,26 +83,43 @@ public partial class MyControl : Control
 }
 ```
 
-The source generator figures out that the exported property should be
+The source generator figures out that the exported property should be called
 `ButtonPath` by taking `_button`, trimming the leading `_` character, and
-capitalizing the first letter. The `[OnReadyGet]` generator works for fields and
-properties.
+capitalizing the first letter.
 
-It also works for `Resource` subclasses:
+The `[OnReadyGet]` source generator works for fields and properties. It also
+works for `Resource` subclasses like `PackedScene` and `Texture`.
+
+### `[OnReadyGet(...)]`
+
+If you pass a path, that path is always used, and `ButtonPath` won't show up in
+the Godot editor. This is useful for a dependency you know will always be at
+that path, and avoids cluttering the Godot editor with script properties that
+you never modify:
 
 ```cs
-[OnReadyGet("res://Scene.tscn")] private PackedScene _scene;
+[OnReadyGet("My/Button/Somewhere")] private Button _button;
 ```
 
-### `[OnReadyGet(...)]` arguments:
+If you know the dependency will usually be at one path, but it may need to be
+tweaked to point somewhere else sometimes, set `Export = true` to use the path
+as the default and also export `ButtonPath` for tweaking:
 
-* `Default = "..."` specifies a default for `ButtonPath`.
-* `OrNull = true` causes the `_Ready()` method to use `GetNodeOrNull<Button>`
-  instead of `GetNode<Button>`. It also adds a not-null check on `ButtonPath` to
-  make sure no exceptions are thrown. This can be used to make **optional**
-  connections.
-* `Private = true` removes the `[Export]` attribute from `ButtonPath`, hiding it
-  from the editor.
+```cs
+[OnReadyGet("My/Button/Somewhere", Export = true)] private Button _button;
+```
+
+To make an optional dependency, use `OrNull = true`. It allows the path to be
+`null` or empty without errors, and if the path exists, it uses
+`GetNodeOrNull<T>` to allow the path to be invalid. The `_button` member will
+then be `null`, so be sure to check.
+
+```cs
+[OnReadyGet("My/Button/Maybe", OrNull = true)] private Button _button;
+```
+
+If your property is a `Resource` rather than a `Node`, pass a resource path
+instead of a node path.
 
 ---
 
@@ -139,112 +156,6 @@ public override void _Ready()
     * (2) Declaration order in the class file.
   * `OnReadyGet` members are all initialized between the last `Order=-1` method
     and the first `Order=0` method, regardless of declaration order.
-
----
-
-### `[GenerateDataSelectorEnum]`
-
-This utility allows you to concisely add some custom data to each member of an
-`enum`.
-
-An `enum` works nicely to show a choice in the Godot editor while authoring a
-scene:
-
-```cs
-public enum SleepPreference { Bed, Floor, Microgravity }
-
-public partial class Person : Node2D
-{
-  [Export] public SleepPreference Pref { get; set; }
-  [OnReady] private void PrintPref()
-  {
-    GD.Print(Pref);
-  }
-}
-```
-
-Let's add a `float Comfort` factor to each enum member. Here's a way that uses
-`switch` and provides a convenient `.GetData` method that can be called on the
-enum:
-
-```cs
-public enum SleepPreference { Bed, Floor, Microgravity }
-
-public class SleepPreferenceData
-{
-  private static readonly SleepPreferenceData
-    Bed = new SleepPreferenceData { Comfort = 1f },
-    Floor = new SleepPreferenceData { Comfort = 0.6f },
-    Microgravity = new SleepPreferenceData { Comfort = 0.6f };
-
-  public static SleepPreferenceData Get(SleepPreference p)
-  {
-    switch(p)
-    {
-      case SleepPreference.Bed: return Bed;
-      case SleepPreference.Floor: return Floor;
-      case SleepPreference.Microgravity: return Microgravity;
-    }
-    throw new ArgumentOutOfRangeException("key");
-  }
-
-  public float Comfort { get; set; }
-}
-
-public static class SleepPreferenceExtensions {
-  public static SleepPreferenceData GetData(this SleepPreference p) => SleepPreferenceData.Get(p);
-}
-```
-
-Usage:
-
-```cs
-public partial class Person : Node2D
-{
-  [Export] public SleepPreference Pref { get; set; }
-
-  [OnReady] private void PrintPref()
-  {
-    GD.Print(Pref);
-    GD.Print(Pref.GetData().Comfort);
-  }
-}
-```
-
-That's fine, but every value name in `SleepPreference` is written four times, in
-a few separate sections of the code. To add a new enum value, every place needs
-to be updated in sync.
-
-> You can shrink this down to two times if you use a Dictionary instead of a
-> switch. Down to only one time, if you use an attribute on each enum member
-> (although attributes limit the data types you can set). There are
-> theoretically some performance differences, with `switch` being the best, but
-> these differences probably aren't important for most usage. The source
-> generator uses `switch` only because it might as well use the theoretical best
-> when generating code for people.
-
-Instead, use `GenerateDataSelectorEnum` to generate all of that code based on
-the data object field names:
-
-```cs
-[GenerateDataSelectorEnum("SleepPreference")]
-public partial class SleepPreferenceData
-{
-  private static readonly SleepPreferenceData
-    Bed = new SleepPreferenceData { Comfort = 1f },
-    Floor = new SleepPreferenceData { Comfort = 0.6f },
-    Microgravity = new SleepPreferenceData { Comfort = 0.6f };
-
-  public float Comfort { get; set; }
-}
-```
-
-To add a new enum value, just add another field to `SleepPreferenceData`.
-
-If you use C# 9.0, you can also use *target-typed new* to shrink this:  
-`Bed = new SleepPreferenceData { Comfort = 1f }`  
-down to this:  
-`Bed = new() { Comfort = 1f }`.
 
 ---
 

@@ -10,16 +10,18 @@ namespace GodotOnReady.Generator.Additions
 
 		public override Action<SourceStringBuilder>? DeclarationWriter => g =>
 		{
-			string export = Private ? "" : "[Export] ";
+			string export = Path is { Length: >0 } || Export
+				? "[Export] "
+				: "";
 
 			g.Line();
 			g.Line(export, "public NodePath ", ExportPropertyName, " { get; set; }");
 
-			if (Default is { Length: >0 })
+			if (Path is { Length: >0 })
 			{
 				g.BlockTab(() =>
 				{
-					g.Line("= ", SyntaxFactory.Literal(Default).ToString(), ";");
+					g.Line("= ", SyntaxFactory.Literal(Path).ToString(), ";");
 				});
 			}
 		};

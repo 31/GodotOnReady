@@ -10,9 +10,9 @@
 		/// </summary>
 		public string SuffixlessExportPropertyName { get; }
 
-		public string? Default { get; }
+		public string? Path { get; }
+		public bool Export { get; }
 		public bool OrNull { get; }
-		public bool Private { get; }
 
 		public OnReadyGetAddition(MemberAttributeSite memberSite)
 			: base(memberSite.AttributeSite.Class)
@@ -29,9 +29,9 @@
 
 			foreach (var constructorArg in memberSite.AttributeSite.Attribute.ConstructorArguments)
 			{
-				if (constructorArg.Value is string @default)
+				if (constructorArg.Value is string path)
 				{
-					Default = @default;
+					Path = path;
 				}
 			}
 
@@ -39,14 +39,14 @@
 			{
 				switch (namedArg.Key)
 				{
-					case "Default" when namedArg.Value.Value is string s:
-						Default = s;
+					case "Path" when namedArg.Value.Value is string s:
+						Path = s;
+						break;
+					case "Export" when namedArg.Value.Value is bool b:
+						Export = b;
 						break;
 					case "OrNull" when namedArg.Value.Value is bool b:
 						OrNull = b;
-						break;
-					case "Private" when namedArg.Value.Value is bool b:
-						Private = b;
 						break;
 				}
 			}

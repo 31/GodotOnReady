@@ -13,7 +13,13 @@ namespace GodotOnReady.Attributes
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 	public sealed class OnReadyGetAttribute : Attribute
 	{
-		public string Default { get; }
+		public string Path { get; }
+
+		/// <summary>
+		/// If true, always generates a property with [Export], even if Path isn't set. The exported
+		/// property can be used in the editor to change the Path.
+		/// </summary>
+		public bool Export { get; set; }
 
 		/// <summary>
 		/// Allows nulls and unexpected node types in the ready method without throwing exceptions.
@@ -21,21 +27,13 @@ namespace GodotOnReady.Attributes
 		/// </summary>
 		public bool OrNull { get; set; }
 
-		/// <summary>
-		/// Prevents exporting a generated property. This disables configuration from the Godot
-		/// scene. This can be used to hide properties that should not be configurable, while
-		/// continuing to automatically set the value in the generated ready method.
-		/// </summary>
-		public bool Private { get; set; }
-
-		/// <param name="default">
-		/// The default initialization path that will be loaded when the node is ready unless
-		/// configured otherwise in the Godot editor. The reset button in the Godot editor restores
-		/// this value.
+		/// <param name="path">
+		/// The path that will be loaded when the node is ready. If not set, a property is generated
+		/// with [Export], so the path can be set in the Godot editor.
 		/// </param>
-		public OnReadyGetAttribute(string @default = "")
+		public OnReadyGetAttribute(string path = "")
 		{
-			Default = @default;
+			Path = path;
 		}
 	}
 

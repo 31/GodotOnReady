@@ -53,5 +53,6 @@ margin_bottom = 20.0
 text = "Spawn"
 script = ExtResource( 3 )
 OtherPath = NodePath("../../HBoxContainer")
+
 [connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
 [connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]

@@ -1,5 +1,4 @@
-﻿using GodotOnReady.Generator.Util;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using System;
 
 namespace GodotOnReady.Generator.Additions
