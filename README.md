@@ -44,7 +44,7 @@ Your Godot project's `.csproj` file should look like this when you're done:
     <GodotUseNETFrameworkRefAssemblies>true</GodotUseNETFrameworkRefAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GodotOnReady" Version="1.0.0" />
+    <PackageReference Include="GodotOnReady" Version="1.0.1" />
   </ItemGroup>
 </Project>
 ```
