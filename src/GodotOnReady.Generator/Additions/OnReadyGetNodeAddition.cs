@@ -31,7 +31,7 @@ namespace GodotOnReady.Generator.Additions
 			g.Line();
 
 			g.Line("if (", ExportPropertyName, " != null)");
-			g.BlockBrace(() => WriteGetNodeLine(g));
+			g.BlockBrace(() => WriteGetMemberBlock(g));
 
 			if (!OrNull)
 			{
@@ -39,12 +39,24 @@ namespace GodotOnReady.Generator.Additions
 			}
 		};
 
-		private void WriteGetNodeLine(SourceStringBuilder g)
+		protected virtual void WriteGetMemberBlock(SourceStringBuilder g)
 		{
-			g.Line(Member.Name, " = GetNode" +
-				(OrNull ? "OrNull" : "") +
-				"<", Member.Type.ToFullDisplayString(), ">" +
-				"(", ExportPropertyName, ");");
+			g.Line("if (!nodeCache.ContainsKey(", ExportPropertyName, "))");
+			g.BlockBrace(() =>
+			{
+				g.Line("var node = GetNodeOrNull" +
+					"<", Member.Type.ToFullDisplayString(), ">" +
+					"(", ExportPropertyName, ");");
+
+				g.Line("nodeCache[", ExportPropertyName, "] = node;");
+				g.Line(Member.Name, " = node;");
+			});
+			g.Line("else");
+			g.BlockBrace(() =>
+			{
+				g.Line(Member.Name, " = nodeCache[", ExportPropertyName, "] as ",
+					Member.Type.ToFullDisplayString(), ";");
+			});
 		}
 
 		protected virtual string ExportPropertyName => SuffixlessExportPropertyName + "Path";

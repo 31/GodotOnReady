@@ -48,6 +48,10 @@ namespace GodotOnReady.Generator
 
 			var resourceSymbol = GetSymbolByName("Godot.Resource");
 			var nodeSymbol = GetSymbolByName("Godot.Node");
+			var nodePathSymbol = GetSymbolByName("Godot.NodePath");
+
+			var dictionarySymbol = GetSymbolByName("System.Collections.Generic.Dictionary`2");
+			var nodeCacheSymbol = dictionarySymbol.Construct(nodePathSymbol, nodeSymbol);
 
 			List<PartialClassAddition> additions = new();
 
@@ -104,13 +108,18 @@ namespace GodotOnReady.Generator
 							member,
 							new AttributeSite(classSymbol, attribute));
 
-						if (member.Type.IsOfBaseType(resourceSymbol))
+						if (site.AttributeSite.Attribute.NamedArguments.Any(
+							a => a.Key == "Property" && a.Value.Value is string { Length: > 0 }))
 						{
-							additions.Add(new OnReadyGetResourceAddition(site));
+							additions.Add(new OnReadyGetNodePropertyAddition(site));
 						}
 						else if (member.Type.IsOfBaseType(nodeSymbol))
 						{
 							additions.Add(new OnReadyGetNodeAddition(site));
+						}
+						else if (member.Type.IsOfBaseType(resourceSymbol))
+						{
+							additions.Add(new OnReadyGetResourceAddition(site));
 						}
 						else
 						{
@@ -143,6 +152,15 @@ namespace GodotOnReady.Generator
 					{
 						additions.Add(new OnReadyAddition(methodSymbol, attribute, classSymbol));
 					}
+				}
+
+				var createNodeCache = additions
+					.Where(a => Equal(a.Class, classSymbol))
+					.Any(a => a is OnReadyGetNodeAddition || a is OnReadyGetNodePropertyAddition);
+
+				if (createNodeCache)
+				{
+					additions.Insert(0, new OnReadyGetNodeCacheAddition(nodeCacheSymbol, classSymbol));
 				}
 			}
 
