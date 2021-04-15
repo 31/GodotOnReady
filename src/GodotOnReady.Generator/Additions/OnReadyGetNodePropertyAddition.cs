@@ -9,26 +9,13 @@ namespace GodotOnReady.Generator.Additions
 
 		protected override void WriteGetMemberBlock(SourceStringBuilder g)
 		{
-			if (Property is { Length: > 0 })
+			if (Property is { Length: >0 } property)
 			{
-				g.Line("if (!nodeCache.ContainsKey(", ExportPropertyName, "))");
-				g.BlockBrace(() =>
-				{
-					g.Line("var node = GetNodeOrNull" +
-						"(", ExportPropertyName, ");");
-
-					g.Line("nodeCache[", ExportPropertyName, "] = node;");
-					g.Line(Member.Name, " = node?.Get(", 
-						SyntaxFactory.Literal(Property).ToString(), ") as ", 
-						Member.Type.ToFullDisplayString(), ";");
-				});
-				g.Line("else");
-				g.BlockBrace(() =>
-				{
-					g.Line(Member.Name, " = nodeCache[", ExportPropertyName, "]?.Get(", 
-						SyntaxFactory.Literal(Property).ToString(), ") as ", 
-						Member.Type.ToFullDisplayString(), ";");
-				});
+				g.Line(Member.Name, " = " +
+					"(", Member.Type.ToFullDisplayString(), ") " +
+					"GetNode", (OrNull ? "OrNull" : "") +
+					"(", ExportPropertyName, ")?.Get(" +
+					SyntaxFactory.Literal(property).ToString(), ");");
 			}
 		}
 	}

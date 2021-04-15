@@ -28,7 +28,7 @@ namespace GodotOnReady.Attributes
 		public bool OrNull { get; set; }
 
 		/// <summary>
-		/// If set the given property of the node will be injected instead of the node itself.
+		/// If set, the given property of the node will be injected instead of the node itself.
 		/// </summary>
 		public string Property { get; set; }
 
