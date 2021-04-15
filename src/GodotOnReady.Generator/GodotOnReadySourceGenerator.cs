@@ -51,30 +51,37 @@ namespace GodotOnReady.Generator
 
 			List<PartialClassAddition> additions = new();
 
-			foreach (var classDecl in receiver.AllClasses)
-			{
-				INamedTypeSymbol? classSymbol = context.Compilation
-					.GetSemanticModel(classDecl.SyntaxTree)
-					.GetDeclaredSymbol(classDecl);
-
-				if (classSymbol is null)
+			var classSymbols = receiver.AllClasses
+				.Select(classDecl =>
 				{
-					context.ReportDiagnostic(
-						Diagnostic.Create(
-							new DiagnosticDescriptor(
-								"GORSG0001",
-								"Inspection",
-								$"Unable to find declared symbol for {classDecl}. Skipping.",
-								"GORSG.Parsing",
-								DiagnosticSeverity.Warning,
-								true
-							),
-							classDecl.GetLocation()
-						)
-					);
-					continue;
-				}
+					INamedTypeSymbol? classSymbol = context.Compilation
+						.GetSemanticModel(classDecl.SyntaxTree)
+						.GetDeclaredSymbol(classDecl);
 
+					if (classSymbol is null)
+					{
+						context.ReportDiagnostic(
+							Diagnostic.Create(
+								new DiagnosticDescriptor(
+									"GORSG0001",
+									"Inspection",
+									$"Unable to find declared symbol for {classDecl}. Skipping.",
+									"GORSG.Parsing",
+									DiagnosticSeverity.Warning,
+									true
+								),
+								classDecl.GetLocation()
+							)
+						);
+					}
+
+					return classSymbol;
+				})
+				.OfType<INamedTypeSymbol>()
+				.Distinct();
+
+			foreach (var classSymbol in classSymbols)
+			{
 				foreach (var attribute in classSymbol.GetAttributes()
 					.Where(a => Equal(a.AttributeClass, generateDataSelectorEnumSymbol)))
 				{
