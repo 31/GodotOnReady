@@ -44,7 +44,7 @@ Your Godot project's `.csproj` file should look like this when you're done:
     <GodotUseNETFrameworkRefAssemblies>true</GodotUseNETFrameworkRefAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GodotOnReady" Version="1.0.1" />
+    <PackageReference Include="GodotOnReady" Version="1.1.0" />
   </ItemGroup>
 </Project>
 ```
@@ -120,6 +120,15 @@ then be `null`, so be sure to check.
 
 If your property is a `Resource` rather than a `Node`, pass a resource path
 instead of a node path.
+
+To get a property of a node instead of the node itself, add `Property`. This is
+particularly useful for properties that aren't exposed in the statically-typed
+Godot C# API, like the animation tree playback object:
+
+```cs
+[OnReadyGet("AnimationTree", Property = "parameters/playback")]
+private AnimationNodeStateMachinePlayback _playback;
+```
 
 ---
 
