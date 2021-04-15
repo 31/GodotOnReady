@@ -104,13 +104,18 @@ namespace GodotOnReady.Generator
 							member,
 							new AttributeSite(classSymbol, attribute));
 
-						if (member.Type.IsOfBaseType(resourceSymbol))
+						if (site.AttributeSite.Attribute.NamedArguments.Any(
+							a => a.Key == "Property" && a.Value.Value is string { Length: > 0 }))
 						{
-							additions.Add(new OnReadyGetResourceAddition(site));
+							additions.Add(new OnReadyGetNodePropertyAddition(site));
 						}
 						else if (member.Type.IsOfBaseType(nodeSymbol))
 						{
 							additions.Add(new OnReadyGetNodeAddition(site));
+						}
+						else if (member.Type.IsOfBaseType(resourceSymbol))
+						{
+							additions.Add(new OnReadyGetResourceAddition(site));
 						}
 						else
 						{

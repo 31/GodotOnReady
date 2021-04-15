@@ -27,6 +27,11 @@ namespace GodotOnReady.Attributes
 		/// </summary>
 		public bool OrNull { get; set; }
 
+		/// <summary>
+		/// If set, the given property of the node will be injected instead of the node itself.
+		/// </summary>
+		public string Property { get; set; }
+
 		/// <param name="path">
 		/// The path that will be loaded when the node is ready. If not set, a property is generated
 		/// with [Export], so the path can be set in the Godot editor.

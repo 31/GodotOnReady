@@ -13,6 +13,7 @@
 		public string? Path { get; }
 		public bool Export { get; }
 		public bool OrNull { get; }
+		public string? Property { get; }
 
 		public OnReadyGetAddition(MemberAttributeSite memberSite)
 			: base(memberSite.AttributeSite.Class)
@@ -47,6 +48,9 @@
 						break;
 					case "OrNull" when namedArg.Value.Value is bool b:
 						OrNull = b;
+						break;
+					case "Property" when namedArg.Value.Value is string s:
+						Property = s;
 						break;
 				}
 			}
