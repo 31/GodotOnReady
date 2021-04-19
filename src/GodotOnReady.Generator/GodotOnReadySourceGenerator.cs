@@ -1,4 +1,4 @@
-﻿using GodotOnReady.Generator.Additions;
+using GodotOnReady.Generator.Additions;
 using GodotOnReady.Generator.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -77,8 +77,8 @@ namespace GodotOnReady.Generator
 
 					return classSymbol;
 				})
-				.OfType<INamedTypeSymbol>()
-				.Distinct();
+				.Distinct(SymbolEqualityComparer.Default)
+				.OfType<INamedTypeSymbol>();
 
 			foreach (var classSymbol in classSymbols)
 			{
