@@ -30,9 +30,10 @@ Bonus feature:
 
 ## Project setup
 
-`GodotOnReady` is a NuGet package that adds two components: a C# library with a
-few annotations, and a source generator that detects those annotations and
-generates code. Just add the `GodotOnReady` package to your project.
+Just add the [`GodotOnReady`](https://www.nuget.org/packages/GodotOnReady)
+NuGet package to your project! `GodotOnReady` adds two components: a C#
+library with a few attributes, and a source generator that detects those
+attributes and generates code.
 
 Your Godot project's `.csproj` file should look like this when you're done:
 
@@ -47,7 +48,8 @@ Your Godot project's `.csproj` file should look like this when you're done:
 You may need to restart your IDE to navigate to generated sources and for the
 generated code to show up in code completion/intellisense.
 
-For advanced alternatives, see
+For advanced alternatives like building from source or avoiding a reference
+to `GodotOnReady.Attributes`, see
 [/docs/advanced-setup.md](/docs/advanced-setup.md).
 
 ## Usage
