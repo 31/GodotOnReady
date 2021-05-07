@@ -15,7 +15,7 @@ Bonus feature:
 
 ## Prerequisites
 
-* Godot 3.2.3 or greater (Mono version)  
+* Godot 3.3 or greater (Mono version)  
   <https://godotengine.org/download>
 
 * .NET SDK 5.0 or greater  
@@ -37,12 +37,7 @@ generates code. Just add the `GodotOnReady` package to your project.
 Your Godot project's `.csproj` file should look like this when you're done:
 
 ```xml
-<Project Sdk="Godot.NET.Sdk/3.2.3">
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <!-- Workaround for using .NET 5 in Godot 3.2.3: https://github.com/godotengine/godot/issues/43717#issuecomment-739422982 -->
-    <GodotUseNETFrameworkRefAssemblies>true</GodotUseNETFrameworkRefAssemblies>
-  </PropertyGroup>
+<Project Sdk="Godot.NET.Sdk/3.3.0">
   <ItemGroup>
     <PackageReference Include="GodotOnReady" Version="1.1.1" />
   </ItemGroup>
