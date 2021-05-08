@@ -89,38 +89,49 @@ works for `Resource` subclasses like `PackedScene` and `Texture`.
 
 ### `[OnReadyGet(...)]`
 
-If you pass a path, that path is always used, and `ButtonPath` won't show up in
-the Godot editor. This is useful for a dependency you know will always be at
-that path, and avoids cluttering the Godot editor with script properties that
-you never modify:
+If you pass a string to the attribute, it's used as the node path to get. The
+`[Export]` `ButtonPath` property isn't generated. This is useful if you know the
+node will always be at a certain path, and avoids cluttering the Godot editor
+with exported properties you'll never use:
 
 ```cs
 [OnReadyGet("My/Button/Somewhere")] private Button _button;
 ```
 
-If you know the dependency will usually be at one path, but it may need to be
-tweaked to point somewhere else sometimes, set `Export = true` to use the path
-as the default and also export `ButtonPath` for tweaking:
+If you know the node will usually be at one path, but someone may need to tweak
+it in the Godot editor to point somewhere else, set `Export = true`. This sets
+the string as the default path, and *also* exports `ButtonPath` for tweaking in
+a scene:
 
 ```cs
 [OnReadyGet("My/Button/Somewhere", Export = true)] private Button _button;
 ```
 
-To make an optional dependency, use `OrNull = true`. It allows the path to be
-`null` or empty without errors, and if the path exists, it uses
-`GetNodeOrNull<T>` to allow the path to be invalid. The `_button` member will
-then be `null`, so be sure to check.
+To get a node if it exists and ignore issues, pass `OrNull = true`. This means
+GodotOnReady does nothing if the the path is `null`, empty, invalid, or points
+at the wrong type of node. Normally, it throws an exception in these cases.
+
+If you use `OrNull = true`, the `_button` member may be null, so be sure to
+check before using it!
 
 ```cs
 [OnReadyGet("My/Button/Maybe", OrNull = true)] private Button _button;
 ```
 
 If your property is a `Resource` rather than a `Node`, pass a resource path
-instead of a node path.
+instead of a node path:
 
-To get a property of a node instead of the node itself, add `Property`. This is
+```cs
+[OnReadyGet("res://icon.png")] private Texture _tex;
+```
+
+To get a property of a node instead of getting the node itself, specify
+`Property = "..."`. GodotOnReady will cast the result for you, so this is
 particularly useful for properties that aren't exposed in the statically-typed
-Godot C# API, like the animation tree playback object:
+Godot C# API.
+
+For example, you can get an animation tree playback object without calling
+`.Get("...")` and casting the result yourself:
 
 ```cs
 [OnReadyGet("AnimationTree", Property = "parameters/playback")]
@@ -131,9 +142,10 @@ private AnimationNodeStateMachinePlayback _playback;
 
 ### `[OnReady]`
 
-Using `OnReadyGet` generates a `public override void _Ready()` method. This
-means you can't define it yourself. To run your own code during `_Ready`, mark
-any zero-argument method with `[OnReady]`:
+Using `OnReadyGet` causes GodotOnReady to generate a `public override void
+_Ready()` method. This means you can't define `_Ready()` yourself. To run your
+own code during `_Ready`, mark any number of zero-argument methods with
+`[OnReady]`:
 
 ```cs
 [OnReadyGet] private Button _button;
@@ -153,15 +165,17 @@ public override void _Ready()
 }
 ```
 
-### `[OnReady(...)]` arguments:
+### `[OnReady(...)]`
 
-* `Order = 0` defines a custom order for methods to be called in the generated
-  `_Ready` method. Default is `0`.
-  * Calls are sorted with this priority:
-    * (1) `Order`, from low to high.
-    * (2) Declaration order in the class file.
-  * `OnReadyGet` members are all initialized between the last `Order=-1` method
-    and the first `Order=0` method, regardless of declaration order.
+There is only one argument, `Order`. It lets you change the sort order for
+`OnReady` methods. The default is `0`.
+
+`OnReady` calls are sorted with this priority:
+* (1) `Order`, from low to high.
+* (2) Declaration order in the class file.
+
+All `OnReadyGet` members are initialized between the last `Order=-1` method and
+the first `Order=0` method.
 
 ---
 
