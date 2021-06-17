@@ -39,6 +39,9 @@ Your Godot project's `.csproj` file should look like this when you're done:
 
 ```xml
 <Project Sdk="Godot.NET.Sdk/3.3.0">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GodotOnReady" Version="1.1.1" />
   </ItemGroup>
