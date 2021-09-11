@@ -1,5 +1,7 @@
 ### `[GenerateDataSelectorEnum]`
 
+## The problem:
+
 This utility allows you to concisely add some custom data to each member of an
 `enum`.
 
@@ -77,6 +79,8 @@ to be updated in sync.
 > theoretically some performance differences, with `switch` *maybe* being the
 > best, but these differences probably aren't important for most usage. The
 > source generator uses `switch` rather than a dictionary somewhat arbitrarily.
+
+## The feature!
 
 Instead, use `GenerateDataSelectorEnum` to generate all of that code based on
 the data object field names:
