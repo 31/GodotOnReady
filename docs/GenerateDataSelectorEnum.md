@@ -89,7 +89,7 @@ That can be a lot to keep track of.
 You *can* make this more concise without using a source generator.
 You can use a Dictionary instead of a switch, or use reflection and add a custom attribute on each enum member.
 However, attributes significantly limit the data types you can set.
-There are some also some (most likely minor) performance penalties you pay with these approaches, and the source generators avoids these.
+There are some also some (most likely minor) performance penalties you pay with these approaches, and the source generator avoids these.
 
 ## Why is this called a "bonus" feature?
 
