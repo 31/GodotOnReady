@@ -1,29 +1,56 @@
 ### `[GenerateDataSelectorEnum]`
 
-## The problem:
+Use this attribute to create an `enum` where each element is associated with an instance of a class that conatins data and potentially behaviors.
 
-This utility allows you to concisely add some custom data to each member of an
-`enum`.
+Why would you want to do this?
+When you have an enum field or property in Godot with `[Export]` applied to it, Godot shows a nice dropdown that you can use in the editor.
+This can be useful to select options when designing a level, or creating some other game logic.
 
-An `enum` works nicely to show a choice in the Godot editor while authoring a
-scene:
+The unfortunate thing is that an `enum` value is just that: a simple value. An integer with names.
+You still need to write game logic that handles each possibility, and associates it with some value or some behavior.
+
+Instead, you can use `GenerateDataSelectorEnum` to define each enum entry along with some data and behavior associated with each entry:
 
 ```cs
-public enum SleepPreference { Bed, Floor, Microgravity }
+[GenerateDataSelectorEnum("SleepPreference")]
+public partial class SleepPreferenceData
+{
+  private static readonly SleepPreferenceData
+    Bed = new() { Comfort = 10 },
+    Floor = new() { Comfort = 2 },
+    Microgravity = new() { Comfort = 4 };
 
-public partial class Person : Node2D
+  public string Feeling { get; set; }
+  public int Comfort { get; set; }
+  
+  public void Exclaim() => GD.Print($"Time to sleep. {Feeling} I would rate that a {Comfort} out of 10.");
+}
+```
+
+```cs
+public class SpaceWorker : Node
 {
   [Export] public SleepPreference Pref { get; set; }
-  [OnReady] private void PrintPref()
+  
+  public override void _Ready()
   {
-    GD.Print(Pref);
+    Pref.GetData().Exclaim();
   }
 }
 ```
 
-Let's add a `float Comfort` factor to each enum member. Here's a way that uses
-`switch` and provides a convenient `.GetData` method that can be called on the
-enum:
+When you create a `SpaceWorker` in a scene, you get a dropdown: 
+
+![image](https://user-images.githubusercontent.com/331300/157167723-184d7699-e091-4198-a284-ddd3f26ec0cd.png)
+
+And when launching the scene: `Time to sleep. I regret this. There's a bed right over there! I would rate that a 2 out of 10.`
+
+## Why a source generator?
+
+This is very possible to do without a source generator.
+The generator simply makes it (much) more concise.
+
+Here is one way, with a `switch` statement:
 
 ```cs
 public enum SleepPreference { Bed, Floor, Microgravity }
@@ -31,9 +58,9 @@ public enum SleepPreference { Bed, Floor, Microgravity }
 public class SleepPreferenceData
 {
   private static readonly SleepPreferenceData
-    Bed = new SleepPreferenceData { Comfort = 1f },
-    Floor = new SleepPreferenceData { Comfort = 0.6f },
-    Microgravity = new SleepPreferenceData { Comfort = 0.6f };
+    Bed = new() { Comfort = 1f },
+    Floor = new() { Comfort = 0.6f },
+    Microgravity = new() { Comfort = 0.6f };
 
   public static SleepPreferenceData Get(SleepPreference p)
   {
@@ -54,53 +81,19 @@ public static class SleepPreferenceExtensions {
 }
 ```
 
-Usage:
+In fact, that's essentially what the source generator generates!
 
-```cs
-public partial class Person : Node2D
-{
-  [Export] public SleepPreference Pref { get; set; }
+Note that every name in `SleepPreference`, like `Microgravity`, is written four times!
+To add a new enum value, every place needs to be updated in sync.
+That can be a lot to keep track of.
 
-  [OnReady] private void PrintPref()
-  {
-    GD.Print(Pref);
-    GD.Print(Pref.GetData().Comfort);
-  }
-}
-```
+You *can* make this more concise without using a source generator.
+If you use a Dictionary instead of a switch, you cut out one repetition.
+If you use reflection and add an attribute on each enum member, you cut out another.
+However, attributes significantly limit the data types you can set.
+There are some also some (most likely minor) performance penalties you pay with these approaches, and the source generators avoids these.
 
-That's fine, but every value name in `SleepPreference` is written four times, in
-a few separate sections of the code. To add a new enum value, every place needs
-to be updated in sync.
+## Why is this called a "bonus" feature?
 
-> You can shrink this down from three to two times if you use a Dictionary
-> instead of a switch. Down to only one time, if you use an attribute on each
-> enum member (although attributes limit the data types you can set). There are
-> theoretically some performance differences, with `switch` *maybe* being the
-> best, but these differences probably aren't important for most usage. The
-> source generator uses `switch` rather than a dictionary somewhat arbitrarily.
-
-## The feature!
-
-Instead, use `GenerateDataSelectorEnum` to generate all of that code based on
-the data object field names:
-
-```cs
-[GenerateDataSelectorEnum("SleepPreference")]
-public partial class SleepPreferenceData
-{
-  private static readonly SleepPreferenceData
-    Bed = new SleepPreferenceData { Comfort = 1f },
-    Floor = new SleepPreferenceData { Comfort = 0.6f },
-    Microgravity = new SleepPreferenceData { Comfort = 0.6f };
-
-  public float Comfort { get; set; }
-}
-```
-
-To add a new enum value, just add another field to `SleepPreferenceData`.
-
-If you use C# 9.0, you can also use *target-typed new* to shrink this:  
-`Bed = new SleepPreferenceData { Comfort = 1f }`  
-down to this:  
-`Bed = new() { Comfort = 1f }`.
+This isn't nearly as useful as `[OnReadyGet]` and the rest of the GodotOnReady functionality.
+It hard to justify why it exists it in a brief readme, so I wrote a long explanation and put it here, instead!
