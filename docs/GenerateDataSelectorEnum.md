@@ -16,7 +16,7 @@ public partial class SleepPreferenceData
 {
   private static readonly SleepPreferenceData
     Bed = new() { Comfort = 10, Feeling = "This mattress is comfortable." },
-    Floor = new() { Comfort = 2, Feeling = "I regret this. There's a bed right over there!"},
+    Floor = new() { Comfort = 2, Feeling = "I regret this. There's a bed right over there!" },
     Microgravity = new() { Comfort = 4, Feeling = "Floating is... ok." };
 
   public string Feeling { get; set; }
@@ -87,8 +87,7 @@ To add a new enum value, every place needs to be updated in sync.
 That can be a lot to keep track of.
 
 You *can* make this more concise without using a source generator.
-If you use a Dictionary instead of a switch, you cut out one repetition.
-If you use reflection and add an attribute on each enum member, you cut out another.
+You can use a Dictionary instead of a switch, or use reflection and add a custom attribute on each enum member.
 However, attributes significantly limit the data types you can set.
 There are some also some (most likely minor) performance penalties you pay with these approaches, and the source generators avoids these.
 
