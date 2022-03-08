@@ -199,17 +199,23 @@ should look like this:
 public partial class MyNode : Node
 ```
 
-### It isn't working! My variables are null, and no new properties show up in Godot.
+### I don't have a error message, but it isn't working!
 
-First, hit the `Build` button at the top-right of the Godot editor to make sure
-your build is up to date. That might make the properties show up.
+* My variables are null even though they have `[OnReadyGet]` attributes!
+* `[OnReady]` methods aren't being called!
+* The `Path` properties don't show up in Godot!
 
-Then, make sure you are using [.NET SDK version 5.0](#Prerequisites) or newer.
-If you run `dotnet --version` in a console window, it will show you what version
-of the SDK you have.
+If you hit one of those issues, it probably means the source generator didn't run.
+Try these steps:
 
-If that doesn't work, please file an issue. Include the output of `dotnet
---info`, the Godot build log, and if possible, the project.
+1. Hit the `Build` button at the top-right of the Godot editor to make sure your build is up to date.
+1. Make sure you are using [.NET SDK version 5.0](#Prerequisites) or newer.
+1. Make sure your [Build Tool is set to `dotnet CLI`](#Prerequisites).
+1. Are you seeing a problem in a CI build, even though it works fine on your own machine? [Your CI may be using a Mono SDK](https://github.com/abarichello/godot-ci/issues/80). Make sure it's using the .NET SDK.
+
+If none of that works, please file an issue. Include the output of
+running `dotnet --info` on the command line, the Godot build log,
+and if possible, the project.
 
 # License
 
