@@ -15,9 +15,9 @@ Instead, you can use `GenerateDataSelectorEnum` to define each enum entry along 
 public partial class SleepPreferenceData
 {
   private static readonly SleepPreferenceData
-    Bed = new() { Comfort = 10 },
-    Floor = new() { Comfort = 2 },
-    Microgravity = new() { Comfort = 4 };
+    Bed = new() { Comfort = 10, Feeling = "This mattress is comfortable." },
+    Floor = new() { Comfort = 2, Feeling = "I regret this. There's a bed right over there!"},
+    Microgravity = new() { Comfort = 4, Feeling = "Floating is... ok." };
 
   public string Feeling { get; set; }
   public int Comfort { get; set; }
