@@ -2,7 +2,6 @@
 
 Use this attribute to create an `enum` where each element is associated with an instance of a class that conatins data and potentially behaviors.
 
-Why would you want to do this?
 When you have an enum field or property in Godot with `[Export]` applied to it, Godot shows a nice dropdown that you can use in the editor.
 This can be useful to select options when designing a level, or creating some other game logic.
 
