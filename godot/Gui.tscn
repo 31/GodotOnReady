@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://MyGui.cs" type="Script" id=1]
 [ext_resource path="res://SpawnButton.cs" type="Script" id=2]
 [ext_resource path="res://SpawnButtonDerived.cs" type="Script" id=3]
+[ext_resource path="res://SpawnButtonConcrete.cs" type="Script" id=4]
 
 [node name="Gui" type="VBoxContainer"]
 anchor_right = 1.0
@@ -17,7 +18,7 @@ MyTreePath = NodePath("Tree")
 
 [node name="Tree" type="Tree" parent="."]
 margin_right = 1024.0
-margin_bottom = 524.0
+margin_bottom = 500.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -25,16 +26,16 @@ __meta__ = {
 }
 
 [node name="LineEdit" type="LineEdit" parent="."]
-margin_top = 528.0
+margin_top = 504.0
 margin_right = 1024.0
-margin_bottom = 552.0
+margin_bottom = 528.0
 caret_blink = true
 caret_blink_speed = 0.5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_top = 556.0
+margin_top = 532.0
 margin_right = 1024.0
-margin_bottom = 576.0
+margin_bottom = 552.0
 
 [node name="Button" type="Button" parent="HBoxContainer"]
 margin_right = 52.0
@@ -43,9 +44,9 @@ text = "Spawn"
 script = ExtResource( 2 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
-margin_top = 580.0
+margin_top = 556.0
 margin_right = 1024.0
-margin_bottom = 600.0
+margin_bottom = 576.0
 
 [node name="Button" type="Button" parent="HBoxContainer2"]
 margin_right = 52.0
@@ -54,5 +55,17 @@ text = "Spawn"
 script = ExtResource( 3 )
 OtherPath = NodePath("../../HBoxContainer")
 
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+margin_top = 580.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="Button" type="Button" parent="HBoxContainer3"]
+margin_right = 52.0
+margin_bottom = 20.0
+text = "Spawn"
+script = ExtResource( 4 )
+
 [connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
 [connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]
+[connection signal="pressed" from="HBoxContainer3/Button" to="HBoxContainer3/Button" method="OnPress"]
