@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://MyGui.cs" type="Script" id=1]
 [ext_resource path="res://SpawnButton.cs" type="Script" id=2]
 [ext_resource path="res://SpawnButtonDerived.cs" type="Script" id=3]
 [ext_resource path="res://SpawnButtonConcrete.cs" type="Script" id=4]
+[ext_resource path="res://NodeImplementingIShout.cs" type="Script" id=5]
 
 [node name="Gui" type="VBoxContainer"]
 anchor_right = 1.0
@@ -11,9 +12,6 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 MyTreePath = NodePath("Tree")
 
 [node name="Tree" type="Tree" parent="."]
@@ -65,6 +63,9 @@ margin_right = 52.0
 margin_bottom = 20.0
 text = "Spawn"
 script = ExtResource( 4 )
+
+[node name="ExampleShoutImplementer" type="Node" parent="."]
+script = ExtResource( 5 )
 
 [connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
 [connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]

@@ -116,7 +116,11 @@ namespace GodotOnReady.Generator
 						{
 							additions.Add(new OnReadyGetNodePropertyAddition(site));
 						}
-						else if (member.Type.IsOfBaseType(nodeSymbol))
+						else if (member.Type.IsOfBaseType(nodeSymbol) ||
+							// Assume an interface means the intent is to get a node. This is
+							// ambiguous: it could be a resource! But this is unlikely.
+							// See https://github.com/31/GodotOnReady/issues/30
+							member.Type.TypeKind == TypeKind.Interface)
 						{
 							additions.Add(new OnReadyGetNodeAddition(site));
 						}
