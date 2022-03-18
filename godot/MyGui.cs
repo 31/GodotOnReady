@@ -35,6 +35,9 @@ public partial class MyGui : VBoxContainer
 		_myTree.HideRoot = true;
 	}
 
+	[OnReadyGet("ExampleShoutImplementer")] public IShout _exampleGetShoutInterface;
+	[OnReady] private void Shout() => _exampleGetShoutInterface.Shout();
+
 	public void LineEdit_text_entered(string text)
 	{
 		AddLineBox.Text = string.Empty;
