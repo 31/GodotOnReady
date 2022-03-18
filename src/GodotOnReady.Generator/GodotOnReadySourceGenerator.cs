@@ -167,6 +167,20 @@ namespace GodotOnReady.Generator
 				source.NamespaceBlockBraceIfExists(classSymbol.GetSymbolNamespaceName(), () =>
 				{
 					source.Line("public partial class ", classAdditionGroup.Key.Name);
+					if (classAdditionGroup.Key.IsGenericType)
+					{
+						source.BlockTab(() =>
+						{
+							source.Line(
+								"<",
+								string.Join(
+									", ",
+									classAdditionGroup.Key.TypeParameters
+										.Select(p => p.ToFullDisplayString())),
+								">");
+						});
+					}
+
 					source.BlockBrace(() =>
 					{
 						foreach (var addition in classAdditionGroup)
