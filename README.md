@@ -43,7 +43,7 @@ Your Godot project's `.csproj` file should look like this when you're done:
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GodotOnReady" Version="1.1.1" />
+    <PackageReference Include="GodotOnReady" Version="1.1.3" />
   </ItemGroup>
 </Project>
 ```
@@ -88,7 +88,9 @@ The source generator figures out that the exported property should be called
 capitalizing the first letter.
 
 The `[OnReadyGet]` source generator works for fields and properties. It also
-works for `Resource` subclasses like `PackedScene` and `Texture`.
+works for `Resource` subclasses like `PackedScene` and `Texture`. You can also
+use an `interface`, in which case GodotOnReady assumes the interface is
+implemented by a node.
 
 ### `[OnReadyGet(...)]`
 
