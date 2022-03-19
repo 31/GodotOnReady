@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using System.Linq;
 
 namespace GodotOnReady.Generator.Util
 {
@@ -33,6 +34,11 @@ namespace GodotOnReady.Generator.Util
 
 		public static bool IsOfBaseType(this ITypeSymbol? type, ITypeSymbol baseType)
 		{
+			if (type is ITypeParameterSymbol p)
+			{
+				return p.ConstraintTypes.Any(ct => ct.IsOfBaseType(baseType));
+			}
+
 			while (type != null)
 			{
 				if (SymbolEqualityComparer.Default.Equals(type, baseType))
@@ -44,6 +50,15 @@ namespace GodotOnReady.Generator.Util
 			}
 
 			return false;
+		}
+
+		public static bool IsInterface(this ITypeSymbol? type)
+		{
+			if (type is ITypeParameterSymbol p)
+			{
+				return p.ConstraintTypes.Any(ct => ct.TypeKind == TypeKind.Interface);
+			}
+			return type?.TypeKind == TypeKind.Interface;
 		}
 	}
 }

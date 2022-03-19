@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://MyGui.cs" type="Script" id=1]
 [ext_resource path="res://SpawnButton.cs" type="Script" id=2]
 [ext_resource path="res://SpawnButtonDerived.cs" type="Script" id=3]
 [ext_resource path="res://SpawnButtonConcrete.cs" type="Script" id=4]
 [ext_resource path="res://NodeImplementingIShout.cs" type="Script" id=5]
+[ext_resource path="res://FetchByGenericButton.cs" type="Script" id=6]
+[ext_resource path="res://FetchByGenericInterfaceConcrete.cs" type="Script" id=7]
 
 [node name="Gui" type="VBoxContainer"]
 anchor_right = 1.0
@@ -66,6 +68,14 @@ script = ExtResource( 4 )
 
 [node name="ExampleShoutImplementer" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[node name="FetchByGeneric" type="Node" parent="."]
+script = ExtResource( 6 )
+FPath = NodePath("../HBoxContainer/Button")
+
+[node name="FetchByGenericInterface" type="Node" parent="."]
+script = ExtResource( 7 )
+FPath = NodePath("../ExampleShoutImplementer")
 
 [connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
 [connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]
