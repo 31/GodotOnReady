@@ -116,11 +116,7 @@ namespace GodotOnReady.Generator
 						{
 							additions.Add(new OnReadyGetNodePropertyAddition(site));
 						}
-						else if (member.Type.IsOfBaseType(nodeSymbol) ||
-							// Assume an interface means the intent is to get a node. This is
-							// ambiguous: it could be a resource! But this is unlikely.
-							// See https://github.com/31/GodotOnReady/issues/30
-							member.Type.TypeKind == TypeKind.Interface)
+						else if (member.Type.IsOfBaseType(nodeSymbol))
 						{
 							additions.Add(new OnReadyGetNodeAddition(site));
 						}
@@ -128,11 +124,42 @@ namespace GodotOnReady.Generator
 						{
 							additions.Add(new OnReadyGetResourceAddition(site));
 						}
+						else if (member.Type.IsInterface())
+						{
+							if (member.Type.IsReferenceType)
+							{
+								// Assume an interface means the intent is to get a node. This is
+								// ambiguous: it could be a resource! But this is unlikely.
+								// See https://github.com/31/GodotOnReady/issues/30
+								additions.Add(new OnReadyGetNodeAddition(site));
+							}
+							else
+							{
+								string issue =
+									$"The type '{member.Type}' of '{member.Symbol}' is an " +
+									$"interface, but not a reference type. If '{member.Type}' is " +
+									$"a generic parameter, ensure it has the 'class' constraint.";
+
+								context.ReportDiagnostic(
+									Diagnostic.Create(
+										new DiagnosticDescriptor(
+											"GORSG0003",
+											"Inspection",
+											issue,
+											"GORSG.Parsing",
+											DiagnosticSeverity.Error,
+											true
+										),
+										member.Symbol.Locations.FirstOrDefault()
+									)
+								);
+							}
+						}
 						else
 						{
 							string issue =
 								$"The type '{member.Type}' of '{member.Symbol}' is not supported." +
-								" Expected a Resource or Node subclass.";
+								" Expected a Resource subclass, Node subclass, or interface.";
 
 							context.ReportDiagnostic(
 								Diagnostic.Create(
