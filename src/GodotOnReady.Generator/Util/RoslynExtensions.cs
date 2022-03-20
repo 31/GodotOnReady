@@ -54,10 +54,6 @@ namespace GodotOnReady.Generator.Util
 
 		public static bool IsInterface(this ITypeSymbol? type)
 		{
-			if (type is ITypeParameterSymbol p)
-			{
-				return p.ConstraintTypes.Any(ct => ct.TypeKind == TypeKind.Interface);
-			}
 			return type?.TypeKind == TypeKind.Interface;
 		}
 	}
