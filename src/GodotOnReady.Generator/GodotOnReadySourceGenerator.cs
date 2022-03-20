@@ -126,19 +126,27 @@ namespace GodotOnReady.Generator
 						}
 						else if (member.Type.IsInterface())
 						{
+							// Assume an interface means the intent is to get a node. This is
+							// ambiguous: it could be a resource! But this is unlikely.
+							// See https://github.com/31/GodotOnReady/issues/30
+							additions.Add(new OnReadyGetNodeAddition(site));
+						}
+						else if (member.Type.TypeKind == TypeKind.TypeParameter)
+						{
 							if (member.Type.IsReferenceType)
 							{
-								// Assume an interface means the intent is to get a node. This is
-								// ambiguous: it could be a resource! But this is unlikely.
-								// See https://github.com/31/GodotOnReady/issues/30
+								// Assume any T is a node. This works with GetNode because it's
+								// only constrained to "class", not "Node". This assumption means
+								// that a "Fetcher<T> where ... { [OnReadyGet] T Foo; }" can be used
+								// for both interface and node values of T.
 								additions.Add(new OnReadyGetNodeAddition(site));
 							}
 							else
 							{
 								string issue =
-									$"The type '{member.Type}' of '{member.Symbol}' is an " +
-									$"interface, but not a reference type. If '{member.Type}' is " +
-									$"a generic parameter, ensure it has the 'class' constraint.";
+									$"The type '{member.Type}' of '{member.Symbol}' is a " +
+									$"type parameter, but not constrained to reference types. " +
+									$"Ensure it has the 'where {member.Type} : class' constraint.";
 
 								context.ReportDiagnostic(
 									Diagnostic.Create(
@@ -159,7 +167,8 @@ namespace GodotOnReady.Generator
 						{
 							string issue =
 								$"The type '{member.Type}' of '{member.Symbol}' is not supported." +
-								" Expected a Resource subclass, Node subclass, or interface.";
+								" Expected a Node subclass, Resource subclass, interface, or " +
+								"type parameter.";
 
 							context.ReportDiagnostic(
 								Diagnostic.Create(
