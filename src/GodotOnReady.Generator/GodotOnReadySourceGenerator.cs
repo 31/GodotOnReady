@@ -198,9 +198,19 @@ namespace GodotOnReady.Generator
 				}
 			}
 
+			bool nullable = context.Compilation is CSharpCompilation csc &&
+				csc.Options.NullableContextOptions != NullableContextOptions.Disable;
+
 			foreach (var classAdditionGroup in additions.GroupBy(a => a.Class))
 			{
 				SourceStringBuilder source = CreateInitializedSourceBuilder();
+
+				// If the project has NRT enabled, disable it for our generated code. We can't
+				// simply always disable because this is not valid syntax in old versions of C#.
+				if (nullable)
+				{
+					source.Line("#nullable disable");
+				}
 
 				if (classAdditionGroup.Key is not { } classSymbol) continue;
 
