@@ -45,6 +45,7 @@ namespace GodotOnReady.Generator
 			var onReadySymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyAttribute");
 			var generateDataSelectorEnumSymbol =
 				GetSymbolByName("GodotOnReady.Attributes.GenerateDataSelectorEnumAttribute");
+			var onReadyFindSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyFindAttribute");
 
 			var resourceSymbol = GetSymbolByName("Godot.Resource");
 			var nodeSymbol = GetSymbolByName("Godot.Node");
@@ -105,13 +106,21 @@ namespace GodotOnReady.Generator
 				{
 					foreach (var attribute in member.Symbol
 						.GetAttributes()
-						.Where(a => Equal(a.AttributeClass, onReadyGetSymbol)))
+						.Where(a => Equal(a.AttributeClass, onReadyGetSymbol) || Equal(a.AttributeClass, onReadyFindSymbol)))
 					{
 						var site = new MemberAttributeSite(
 							member,
 							new AttributeSite(classSymbol, attribute));
 
-						if (site.AttributeSite.Attribute.NamedArguments.Any(
+						if (member.Type.IsOfBaseType(onReadyFindSymbol))
+						{
+							additions.Add(new OnReadyFindNodeAddition(site));
+						}
+						else if (site.AttributeSite.Attribute.AttributeClass.IsOfBaseType(onReadyFindSymbol))
+						{
+							additions.Add(new OnReadyFindNodeAddition(site));
+						}
+						else if (site.AttributeSite.Attribute.NamedArguments.Any(
 							a => a.Key == "Property" && a.Value.Value is string { Length: > 0 }))
 						{
 							additions.Add(new OnReadyGetNodePropertyAddition(site));

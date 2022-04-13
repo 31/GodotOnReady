@@ -42,6 +42,21 @@ namespace GodotOnReady.Attributes
 		}
 	}
 
+
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+	public sealed class OnReadyFindAttribute : Attribute
+	{
+		public string Name { get; }
+
+		public bool Recursive { get; set; } = true;
+		public bool Owned { get; set; } = true;
+
+		public OnReadyFindAttribute(string name)
+		{
+			Name = name;
+		}
+	}
+
 	/// <summary>
 	/// Calls the applied 0-argument method during the generated '_Ready' method.
 	/// </summary>
