@@ -14,6 +14,8 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 1 )
+LabelSomewhereMask = "Somewhere"
+LabelSomewhereVisibleMask = "Somewhere"
 MyTreePath = NodePath("Tree")
 
 [node name="Tree" type="Tree" parent="."]
@@ -31,6 +33,15 @@ margin_right = 1024.0
 margin_bottom = 528.0
 caret_blink = true
 caret_blink_speed = 0.5
+
+[node name="Somewhere" type="Label" parent="LineEdit"]
+margin_left = 334.0
+margin_top = -63.0
+margin_right = 493.0
+margin_bottom = -49.0
+text = "This label is somewhere!
+And more!"
+percent_visible = 0.896552
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_top = 532.0

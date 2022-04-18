@@ -11,6 +11,14 @@ public partial class MyGui : VBoxContainer
 
 	[OnReadyGet("LineEdit")] public LineEdit AddLineBox { get; set; }
 
+	[OnReadyFind] public Label LabelSomewhere;
+	[OnReadyFind(Property = "visible_characters")] public int LabelSomewhereVisible;
+	[OnReady] private void SetLabelSomewhere()
+	{
+		LabelSomewhere.Text = $"Found the label with value {LabelSomewhereVisible}.";
+		LabelSomewhere.VisibleCharacters = -1;
+	}
+
 	// [OnReadyGet] private Button _nullNode;
 	// [OnReadyGet] private Texture _nullResource;
 
