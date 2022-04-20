@@ -14,6 +14,8 @@
 		public bool Export { get; }
 		public bool OrNull { get; }
 		public string? Property { get; }
+		public bool NonRecursive { get; }
+		public bool Unowned { get; }
 
 		public OnReadyGetAddition(MemberAttributeSite memberSite)
 			: base(memberSite.AttributeSite.Class)
@@ -52,6 +54,12 @@
 					case "Property" when namedArg.Value.Value is string s:
 						Property = s;
 						break;
+					case "NonRecursive" when namedArg.Value.Value is bool b:
+						NonRecursive = b;
+						break;
+					case "Unowned" when namedArg.Value.Value is bool b:
+						Unowned = b;
+						break;
 				}
 			}
 		}
@@ -67,7 +75,7 @@
 					Member.Name,
 					"' is unexpectedly null in '{GetPath()}', '{this}'. Ensure '",
 					exportMemberName,
-					"' is set correctly, or set [OnReadyGet(OrNull = true)] to allow null.\");");
+					"' is set correctly, or set OrNull = true in the attribute to allow null.\");");
 			});
 		}
 	}

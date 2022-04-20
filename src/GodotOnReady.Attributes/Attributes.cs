@@ -11,7 +11,7 @@ namespace GodotOnReady.Attributes
 	/// fields of types that subclass either Node or Resource.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-	public sealed class OnReadyGetAttribute : Attribute
+	public class OnReadyGetAttribute : Attribute
 	{
 		public string Path { get; }
 
@@ -40,6 +40,30 @@ namespace GodotOnReady.Attributes
 		{
 			Path = path;
 		}
+	}
+
+	/// <summary>
+	/// Generates code to initialize this property or field when the node is ready using FindNode,
+	/// with a find mask configurable in the Godot editor. This attribute works only for fields
+	/// of types that subclass Node.
+	/// </summary>
+	public sealed class OnReadyFindAttribute : OnReadyGetAttribute
+	{
+		/// <summary>
+		/// If true, do not search recursively by passing false to FindNode's recursive parameter.
+		/// </summary>
+		public bool NonRecursive { get; set; }
+
+		/// <summary>
+		/// If true, allow FindNode to find unowned nodes by passing false to the "owned" parameter.
+		/// </summary>
+		public bool Unowned { get; set; }
+
+		/// <param name="mask">
+		/// The mask that will be found when the node is ready. If not set, a property is generated
+		/// with [Export], so the mask can be set in the Godot editor.
+		/// </param>
+		public OnReadyFindAttribute(string mask = "") : base(mask) { }
 	}
 
 	/// <summary>

@@ -10,14 +10,14 @@ namespace GodotOnReady.Generator.Additions
 
 		public override Action<SourceStringBuilder>? DeclarationWriter => g =>
 		{
-			string export = Path is not { Length: >0 } || Export
+			string export = Path is not { Length: > 0 } || Export
 				? "[Export] "
 				: "";
 
 			g.Line();
 			g.Line(export, "public NodePath ", ExportPropertyName, " { get; set; }");
 
-			if (Path is { Length: >0 })
+			if (Path is { Length: > 0 })
 			{
 				g.BlockTab(() =>
 				{
@@ -31,21 +31,30 @@ namespace GodotOnReady.Generator.Additions
 			g.Line();
 
 			g.Line("if (", ExportPropertyName, " != null)");
-			g.BlockBrace(() => WriteGetMemberBlock(g));
+			g.BlockBrace(() =>
+			{
+				if (Property is { Length: > 0 } property)
+				{
+					g.Line(Member.Name, " = " +
+						"(", Member.Type.ToFullDisplayString(), ") " +
+						"GetNode", (OrNull ? "OrNull" : "") +
+						"(", ExportPropertyName, ")?.Get(" +
+						SyntaxFactory.Literal(property), ");");
+				}
+				else
+				{
+					g.Line(Member.Name, " = GetNode" +
+						(OrNull ? "OrNull" : "") +
+						"<", Member.Type.ToFullDisplayString(), ">" +
+						"(", ExportPropertyName, ");");
+				}
+			});
 
 			if (!OrNull)
 			{
 				WriteMemberNullCheck(g, ExportPropertyName);
 			}
 		};
-
-		protected virtual void WriteGetMemberBlock(SourceStringBuilder g)
-		{
-			g.Line(Member.Name, " = GetNode" +
-					(OrNull ? "OrNull" : "") +
-					"<", Member.Type.ToFullDisplayString(), ">" +
-					"(", ExportPropertyName, ");");
-		}
 
 		protected virtual string ExportPropertyName => SuffixlessExportPropertyName + "Path";
 	}

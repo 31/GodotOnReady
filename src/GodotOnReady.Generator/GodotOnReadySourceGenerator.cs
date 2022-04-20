@@ -42,6 +42,7 @@ namespace GodotOnReady.Generator
 				?? throw new Exception($"Can't find {fullName}");
 
 			var onReadyGetSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyGetAttribute");
+			var onReadyFindSymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyFindAttribute");
 			var onReadySymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyAttribute");
 			var generateDataSelectorEnumSymbol =
 				GetSymbolByName("GodotOnReady.Attributes.GenerateDataSelectorEnumAttribute");
@@ -103,55 +104,76 @@ namespace GodotOnReady.Generator
 
 				foreach (var member in members)
 				{
-					foreach (var attribute in member.Symbol
-						.GetAttributes()
-						.Where(a => Equal(a.AttributeClass, onReadyGetSymbol)))
+					foreach (var attribute in member.Symbol.GetAttributes())
 					{
 						var site = new MemberAttributeSite(
 							member,
 							new AttributeSite(classSymbol, attribute));
 
-						if (site.AttributeSite.Attribute.NamedArguments.Any(
-							a => a.Key == "Property" && a.Value.Value is string { Length: > 0 }))
+						if (Equal(attribute.AttributeClass, onReadyFindSymbol))
 						{
-							additions.Add(new OnReadyGetNodePropertyAddition(site));
+							additions.Add(new OnReadyFindNodeAddition(site));
 						}
-						else if (member.Type.IsOfBaseType(nodeSymbol))
+						else if (Equal(attribute.AttributeClass, onReadyGetSymbol))
 						{
-							additions.Add(new OnReadyGetNodeAddition(site));
-						}
-						else if (member.Type.IsOfBaseType(resourceSymbol))
-						{
-							additions.Add(new OnReadyGetResourceAddition(site));
-						}
-						else if (member.Type.IsInterface())
-						{
-							// Assume an interface means the intent is to get a node. This is
-							// ambiguous: it could be a resource! But this is unlikely.
-							// See https://github.com/31/GodotOnReady/issues/30
-							additions.Add(new OnReadyGetNodeAddition(site));
-						}
-						else if (member.Type.TypeKind == TypeKind.TypeParameter)
-						{
-							if (member.Type.IsReferenceType)
+							if (member.Type.IsOfBaseType(nodeSymbol))
 							{
-								// Assume any T is a node. This works with GetNode because it's
-								// only constrained to "class", not "Node". This assumption means
-								// that a "Fetcher<T> where ... { [OnReadyGet] T Foo; }" can be used
-								// for both interface and node values of T.
 								additions.Add(new OnReadyGetNodeAddition(site));
+							}
+							else if (member.Type.IsOfBaseType(resourceSymbol))
+							{
+								additions.Add(new OnReadyGetResourceAddition(site));
+							}
+							else if (member.Type.IsInterface())
+							{
+								// Assume an interface means the intent is to get a node. This is
+								// ambiguous: it could be a resource! But this is unlikely.
+								// See https://github.com/31/GodotOnReady/issues/30
+								additions.Add(new OnReadyGetNodeAddition(site));
+							}
+							else if (member.Type.TypeKind == TypeKind.TypeParameter)
+							{
+								if (member.Type.IsReferenceType)
+								{
+									// Assume any T is a node. This works with GetNode because it's
+									// only constrained to "class", not "Node". This assumption means
+									// that a "Fetcher<T> where ... { [OnReadyGet] T Foo; }" can be used
+									// for both interface and node values of T.
+									additions.Add(new OnReadyGetNodeAddition(site));
+								}
+								else
+								{
+									string issue =
+										$"The type '{member.Type}' of '{member.Symbol}' is a " +
+										$"type parameter, but not constrained to reference types. " +
+										$"Ensure it has the 'where {member.Type} : class' constraint.";
+
+									context.ReportDiagnostic(
+										Diagnostic.Create(
+											new DiagnosticDescriptor(
+												"GORSG0003",
+												"Inspection",
+												issue,
+												"GORSG.Parsing",
+												DiagnosticSeverity.Error,
+												true
+											),
+											member.Symbol.Locations.FirstOrDefault()
+										)
+									);
+								}
 							}
 							else
 							{
 								string issue =
-									$"The type '{member.Type}' of '{member.Symbol}' is a " +
-									$"type parameter, but not constrained to reference types. " +
-									$"Ensure it has the 'where {member.Type} : class' constraint.";
+									$"The type '{member.Type}' of '{member.Symbol}' is not supported." +
+									" Expected a Node subclass, Resource subclass, interface, or " +
+									"type parameter.";
 
 								context.ReportDiagnostic(
 									Diagnostic.Create(
 										new DiagnosticDescriptor(
-											"GORSG0003",
+											"GORSG0002",
 											"Inspection",
 											issue,
 											"GORSG.Parsing",
@@ -162,27 +184,6 @@ namespace GodotOnReady.Generator
 									)
 								);
 							}
-						}
-						else
-						{
-							string issue =
-								$"The type '{member.Type}' of '{member.Symbol}' is not supported." +
-								" Expected a Node subclass, Resource subclass, interface, or " +
-								"type parameter.";
-
-							context.ReportDiagnostic(
-								Diagnostic.Create(
-									new DiagnosticDescriptor(
-										"GORSG0002",
-										"Inspection",
-										issue,
-										"GORSG.Parsing",
-										DiagnosticSeverity.Error,
-										true
-									),
-									member.Symbol.Locations.FirstOrDefault()
-								)
-							);
 						}
 					}
 				}
