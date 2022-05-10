@@ -29,6 +29,7 @@ namespace GodotOnReady.Attributes
 
 		/// <summary>
 		/// If set, the given property of the node will be injected instead of the node itself.
+		/// Path will also always be treated as a Node path, not a Resource path.
 		/// </summary>
 		public string Property { get; set; }
 

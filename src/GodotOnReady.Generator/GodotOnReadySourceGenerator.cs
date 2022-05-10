@@ -120,6 +120,14 @@ namespace GodotOnReady.Generator
 							{
 								additions.Add(new OnReadyGetNodeAddition(site));
 							}
+							else if (site.AttributeSite.Attribute.NamedArguments
+								.Any(a => a.Key == "Property" && a.Value.Value is string { Length: > 0 }))
+							{
+								// If a Property path is given, always treat it as a node. The
+								// primary use of Property is to get a Resource from a Node that
+								// doesn't have a statically-typed .NET API.
+								additions.Add(new OnReadyGetNodeAddition(site));
+							}
 							else if (member.Type.IsOfBaseType(resourceSymbol))
 							{
 								additions.Add(new OnReadyGetResourceAddition(site));

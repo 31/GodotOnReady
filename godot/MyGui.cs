@@ -24,6 +24,9 @@ public partial class MyGui : VBoxContainer
 
 	// [OnReadyGet("a/b/c")] private Button _notFoundNode;
 	// [OnReadyGet("a/b/d")] private Texture _notFoundResource;
+	
+	[OnReadyGet("GradientSprite", Property = "texture")] private GradientTexture _gt;
+	[OnReady] private void InitGradientEnd() => _gt.Gradient.SetColor(1, Colors.Blue);
 
 	[OnReady]
 	public void InitializeInput()
