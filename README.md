@@ -172,15 +172,19 @@ public override void _Ready()
 
 ### `[OnReady(...)]`
 
-There is only one argument, `Order`. It lets you change the sort order for
-`OnReady` methods. The default is `0`.
+`OnReady` accepts one optional named argument, `Order`. This lets you change the order of `OnReady` method calls in `_Ready()`.
 
-`OnReady` calls are sorted with this priority:
-* (1) `Order`, from low to high.
-* (2) Declaration order in the class file.
+The calls in `_Ready()` are sorted by `Order`, from low to high. If two `OnReady` attributes have the same `Order` value (such as the default, `0`), the calls are sorted by the declaration order in the class file.
 
-All `OnReadyGet` members are initialized between the last `Order=-1` method and
-the first `Order=0` method.
+All `OnReadyGet` properties and fields are initialized before any `[OnReady(Order = 0)]` method is called.
+
+For example, the following methods would normally be called from the top down (Two, One, Three), but `Order` makes them called in the order One, Two, Three:
+
+```cs
+[OnReady(Order = 2)] private void Two() => GD.Print("2");
+[OnReady(Order = 1)] private void One() => GD.Print("1");
+[OnReady(Order = 3)] private void Three() => GD.Print("3");
+```
 
 ---
 
