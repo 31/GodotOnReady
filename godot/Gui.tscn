@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://MyGui.cs" type="Script" id=1]
 [ext_resource path="res://SpawnButton.cs" type="Script" id=2]
@@ -7,6 +7,12 @@
 [ext_resource path="res://NodeImplementingIShout.cs" type="Script" id=5]
 [ext_resource path="res://FetchByGenericButton.cs" type="Script" id=6]
 [ext_resource path="res://FetchByGenericInterfaceConcrete.cs" type="Script" id=7]
+
+[sub_resource type="Gradient" id=1]
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+width = 96
 
 [node name="Gui" type="VBoxContainer"]
 anchor_right = 1.0
@@ -87,6 +93,11 @@ FPath = NodePath("../HBoxContainer/Button")
 [node name="FetchByGenericInterface" type="Node" parent="."]
 script = ExtResource( 7 )
 FPath = NodePath("../ExampleShoutImplementer")
+
+[node name="GradientSprite" type="Sprite" parent="."]
+position = Vector2( 589, 54 )
+scale = Vector2( 1, 32 )
+texture = SubResource( 2 )
 
 [connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
 [connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]
