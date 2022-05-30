@@ -192,9 +192,13 @@ For example, the following methods would normally be called from the top down (T
 
 ### error CS0111: Type '***' already defines a member called '_Ready' with the same parameter types
 
-When you use `[OnReadyGet]`, you can't write `public override void _Ready()` in
-your own code, because GodotOnReady generated it already. To run your own code
-in the generated `_Ready()` method, use [`[OnReady]`](#OnReady).
+This means your script contains `override void _Ready() { ... }`. Instead, use [`[OnReady]`](#OnReady) with a different method name, for example, `Ready`:
+
+```cs
+[OnReady] private void Ready() { ... }
+```
+
+This happens because GodotOnReady writes its own `public override void _Ready()`, and C# doesn't allow the same method to be overridden multiple times in the same class.
 
 ### error CS0260: Missing partial modifier on declaration of type '***'; another partial declaration of this type exists
 
