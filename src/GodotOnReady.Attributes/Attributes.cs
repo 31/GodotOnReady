@@ -98,4 +98,55 @@ namespace GodotOnReady.Attributes
 			Name = name;
 		}
 	}
+
+	/// <summary>
+	/// When applied to a property or field member of node N, generates a ready method in N that
+	/// uses Godot's FindParent method to search for an ancestor node A. If the N member's type is
+	/// A, the ready method assigns A to the member. If the member's type is not A, the ready method
+	/// gets the value of the field/property on A that matches the type and assigns it to N's
+	/// member.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// This method is intended for use as dependency injection from a parent node, driven by the
+	/// child node. It's not generally considered good practice in Godot, but sometimes it's a
+	/// useful shortcut.
+	/// </para>
+	/// 
+	/// <para>
+	/// Be <b>very careful</b> about Ready call order when using this attribute. Child nodes are
+	/// ready before parent nodes, so this attribute only works if the child is added to the tree
+	/// after the parent is already present, or if it's only used to retrieve values set in the
+	/// parent's constructor, not on ready.
+	/// </para>
+	///
+	/// <para>
+	/// The generator searches for exactly one field/property that is assignable to the type of the
+	/// field/property this attribute is attached to, and fetches that.
+	/// </para>
+	///
+	/// <para>
+	/// Only compatible with C# classes. Scripts in GDScript are not searched.
+	/// </para>
+	/// </remarks>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+	public sealed class InjectAncestorValueAttribute : Attribute
+	{
+		/// <summary>
+		/// Inject an ancestor node or ancestor node's field/property into the specified field/prop.
+		/// </summary>
+		public InjectAncestorValueAttribute(Type nodeType, string nodeName) { }
+
+		/// <summary>
+		/// Inject an ancestor node or ancestor node's field/property into the specified field/prop.
+		/// The node's name must be the same as the type's name.
+		/// </summary>
+		public InjectAncestorValueAttribute(Type nodeType) { }
+
+		/// <summary>
+		/// Inject an ancestor node into the specified field/property. The node must have same type
+		/// as the field/prop, and the name must be the same as the type's name.
+		/// </summary>
+		public InjectAncestorValueAttribute() { }
+	}
 }

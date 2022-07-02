@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
+using System.Collections.Generic;
 
 namespace GodotOnReady.Generator.Additions
 {
@@ -19,5 +20,7 @@ namespace GodotOnReady.Generator.Additions
 		public virtual Action<SourceStringBuilder>? OnReadyStatementWriter => null;
 
 		public virtual Action<SourceStringBuilder>? OutsideClassStatementWriter => null;
+		
+		public List<Diagnostic> Diagnostics { get; private set; } = new();
 	}
 }

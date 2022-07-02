@@ -46,6 +46,8 @@ namespace GodotOnReady.Generator
 			var onReadySymbol = GetSymbolByName("GodotOnReady.Attributes.OnReadyAttribute");
 			var generateDataSelectorEnumSymbol =
 				GetSymbolByName("GodotOnReady.Attributes.GenerateDataSelectorEnumAttribute");
+			var injectAncestorValueAttributeSymbol =
+				GetSymbolByName("GodotOnReady.Attributes.InjectAncestorValueAttribute");
 
 			var resourceSymbol = GetSymbolByName("Godot.Resource");
 			var nodeSymbol = GetSymbolByName("Godot.Node");
@@ -96,13 +98,7 @@ namespace GodotOnReady.Generator
 						new AttributeSite(classSymbol, attribute)));
 				}
 
-				var members = Enumerable
-					.Concat(
-						classSymbol.GetMembers().OfType<IPropertySymbol>().Select(MemberSymbol.Create),
-						classSymbol.GetMembers().OfType<IFieldSymbol>().Select(MemberSymbol.Create))
-					.ToArray();
-
-				foreach (var member in members)
+				foreach (var member in MemberSymbol.CreateAll(classSymbol).ToArray())
 				{
 					foreach (var attribute in member.Symbol.GetAttributes())
 					{
@@ -110,7 +106,11 @@ namespace GodotOnReady.Generator
 							member,
 							new AttributeSite(classSymbol, attribute));
 
-						if (Equal(attribute.AttributeClass, onReadyFindSymbol))
+						if (Equal(attribute.AttributeClass, injectAncestorValueAttributeSymbol))
+						{
+							additions.Add(new InjectAncestorValueAddition(site));
+						}
+						else if (Equal(attribute.AttributeClass, onReadyFindSymbol))
 						{
 							additions.Add(new OnReadyFindNodeAddition(site));
 						}
@@ -287,6 +287,11 @@ namespace GodotOnReady.Generator
 						addition.OutsideClassStatementWriter?.Invoke(source);
 					}
 				});
+
+				foreach (var d in additions.SelectMany(a => a.Diagnostics))
+				{
+					context.ReportDiagnostic(d);
+				}
 
 				string escapedNamespace =
 					classAdditionGroup.Key.GetSymbolNamespaceName()?.Replace(".", "_") ?? "";
