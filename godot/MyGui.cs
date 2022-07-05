@@ -5,6 +5,10 @@ using System;
 
 public partial class MyGui : VBoxContainer
 {
+	// Example parent lookup with a property that doesn't share the name of the class in a script
+	// that doesn't share its name with the node it's attached to.
+	public NumberService Numbers { get; } = new NumberService();
+	
 	[OnReadyGet(nameof(OptionalButton), OrNull = true)] public Button OptionalButton { get; set; }
 
 	[OnReadyGet(OrNull = true)] public Button FullyOptionalButton { get; set; }
