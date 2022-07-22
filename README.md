@@ -31,9 +31,7 @@ Bonus feature:
 ## Project setup
 
 Just add the [`GodotOnReady`](https://www.nuget.org/packages/GodotOnReady)
-NuGet package to your project! `GodotOnReady` adds two components: a C#
-library with a few attributes, and a source generator that detects those
-attributes and generates code.
+NuGet package to your project!
 
 Your Godot project's `.csproj` file should look like this when you're done:
 
@@ -43,17 +41,16 @@ Your Godot project's `.csproj` file should look like this when you're done:
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GodotOnReady" Version="1.2.1" />
+    <PackageReference Include="GodotOnReady" Version="1.2.2" />
   </ItemGroup>
 </Project>
 ```
 
-You may need to restart your IDE to navigate to generated sources and for the
-generated code to show up in code completion/intellisense.
+`GodotOnReady` includes two subpackages: a C# class library with a few attributes, and a source generator that detects when you use those attributes and generates code behind the scenes.
 
-For advanced alternatives like building from source or avoiding a reference
-to `GodotOnReady.Attributes`, see
-[/docs/advanced-setup.md](/docs/advanced-setup.md).
+After clicking Build one time to set up the package, you may need to restart your IDE to let the generator load and provide autocomplete/intellisense information.
+
+> For advanced alternatives like building from source or avoiding a reference to `GodotOnReady.Attributes`, see [/docs/advanced-setup.md](/docs/advanced-setup.md).
 
 ## Usage
 
