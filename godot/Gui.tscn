@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://MyGui.cs" type="Script" id=1]
 [ext_resource path="res://SpawnButton.cs" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://RandomNumberLabel.cs" type="Script" id=8]
 [ext_resource path="res://Provider.cs" type="Script" id=9]
 [ext_resource path="res://Consumer.cs" type="Script" id=10]
+[ext_resource path="res://ReadmeEx.cs" type="Script" id=11]
 
 [sub_resource type="Gradient" id=1]
 
@@ -29,7 +30,7 @@ MyTreePath = NodePath("Tree")
 
 [node name="Tree" type="Tree" parent="."]
 margin_right = 1024.0
-margin_bottom = 496.0
+margin_bottom = 458.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -37,9 +38,9 @@ __meta__ = {
 }
 
 [node name="LineEdit" type="LineEdit" parent="."]
-margin_top = 500.0
+margin_top = 462.0
 margin_right = 1024.0
-margin_bottom = 524.0
+margin_bottom = 486.0
 caret_blink = true
 caret_blink_speed = 0.5
 
@@ -61,9 +62,9 @@ text = "Random number here"
 script = ExtResource( 8 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_top = 528.0
+margin_top = 490.0
 margin_right = 1024.0
-margin_bottom = 548.0
+margin_bottom = 510.0
 
 [node name="Button" type="Button" parent="HBoxContainer"]
 margin_right = 52.0
@@ -72,9 +73,9 @@ text = "Spawn"
 script = ExtResource( 2 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
-margin_top = 552.0
+margin_top = 514.0
 margin_right = 1024.0
-margin_bottom = 572.0
+margin_bottom = 534.0
 
 [node name="Button" type="Button" parent="HBoxContainer2"]
 margin_right = 52.0
@@ -84,9 +85,9 @@ script = ExtResource( 3 )
 OtherPath = NodePath("../../HBoxContainer")
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="."]
-margin_top = 576.0
+margin_top = 538.0
 margin_right = 1024.0
-margin_bottom = 596.0
+margin_bottom = 558.0
 
 [node name="Button" type="Button" parent="HBoxContainer3"]
 margin_right = 52.0
@@ -111,9 +112,9 @@ scale = Vector2( 1, 32 )
 texture = SubResource( 2 )
 
 [node name="Provider" type="Control" parent="."]
-margin_top = 600.0
+margin_top = 562.0
 margin_right = 1024.0
-margin_bottom = 600.0
+margin_bottom = 562.0
 script = ExtResource( 9 )
 
 [node name="Consumer" type="Control" parent="Provider"]
@@ -121,6 +122,19 @@ margin_top = 4.0
 margin_right = 1024.0
 margin_bottom = 4.0
 script = ExtResource( 10 )
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+margin_top = 566.0
+margin_right = 1024.0
+margin_bottom = 600.0
+script = ExtResource( 11 )
+ButtonPath = NodePath("Button")
+
+[node name="Button" type="Button" parent="PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1017.0
+margin_bottom = 27.0
 
 [connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
 [connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]
