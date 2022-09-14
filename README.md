@@ -84,6 +84,10 @@ The source generator figures out that the exported property should be called
 `ButtonPath` by taking `_button`, trimming the leading `_` character, and
 capitalizing the first letter.
 
+The generated `_Ready()` method calls `base._Ready()` to support inheritance,
+and includes some extra code to throw a more useful error message when the
+`GetNode` fails.
+
 The `[OnReadyGet]` source generator works for fields and properties. It also
 works for `Resource` subclasses like `PackedScene` and `Texture`. You can also
 use an `interface`, in which case GodotOnReady assumes the interface is
@@ -150,10 +154,10 @@ own code during `_Ready`, mark any number of zero-argument methods with
 `[OnReady]`:
 
 ```cs
-[OnReadyGet] private Button _button;
+[OnReadyGet(OrNull = true)] private Button _button;
 [OnReady] private void ConnectButtonOnReady()
 {
-  _button.Connect("pressed", this, nameof(ButtonPressed));
+  _button?.Connect("pressed", this, nameof(ButtonPressed));
 }
 ```
 
@@ -162,7 +166,8 @@ The generated `_Ready()` method will then be:
 ```cs
 public override void _Ready()
 {
-  _button = GetNode<Button>(ButtonPath);
+  base._Ready();
+  if (ButtonPath != null) _button = GetNodeOrNull<global::Godot.Button>(ButtonPath);
   ConnectButtonOnReady();
 }
 ```
