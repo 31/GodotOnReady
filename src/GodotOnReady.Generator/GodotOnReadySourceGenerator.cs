@@ -225,7 +225,7 @@ namespace GodotOnReady.Generator
 
 				source.NamespaceBlockBraceIfExists(classSymbol.GetSymbolNamespaceName(), () =>
 				{
-					source.Line("public partial class ", classAdditionGroup.Key.Name);
+					source.Line("partial class ", classAdditionGroup.Key.Name);
 					if (classAdditionGroup.Key.IsGenericType)
 					{
 						source.BlockTab(() =>
