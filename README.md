@@ -1,6 +1,6 @@
 # GodotOnReady
 
-**GodotOnReady** is a [C# Source Generator] that adds convenient `onready`-like
+**GodotOnReady** is a [C# Source Generator] for Godot 3.x that adds convenient `onready`-like
 features to your C# scripts in Godot Mono without any reflection.
 
 * [`[OnReadyGet]`](#onreadyget) - Load a `Node` or `Resource` subclass into a
@@ -15,8 +15,9 @@ Bonus feature:
 
 ## Prerequisites
 
-* Godot 3.2.3 or greater (Mono version) (3.3+ recommended)  
-  <https://godotengine.org/download>
+* Godot 3.x, Mono version  
+  <https://godotengine.org/download>  
+  (4.0+ not supported due to C# source generator conflicts: [GodotOnReady#49](https://github.com/31/GodotOnReady/issues/49))
 
 * .NET SDK 6.0 or greater  
   <https://dotnet.microsoft.com/download>
