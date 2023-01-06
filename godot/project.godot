@@ -16,3 +16,7 @@ _global_script_class_icons={
 
 config/name="GodotOnReadyDev"
 run/main_scene="res://Gui.tscn"
+
+[mono]
+
+project/assembly_name="GodotOnReadyDev"
