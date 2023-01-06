@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotOnReady.Attributes", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotOnReady", "..\src\GodotOnReady\GodotOnReady.csproj", "{BAC56BBC-1934-4A23-9E15-AD1B44B3180B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Godot4OnReadyDev", "..\godot4\Godot4OnReadyDev.csproj", "{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU
@@ -39,5 +41,11 @@ Global
 		{BAC56BBC-1934-4A23-9E15-AD1B44B3180B}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC56BBC-1934-4A23-9E15-AD1B44B3180B}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{BAC56BBC-1934-4A23-9E15-AD1B44B3180B}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{2A1912A4-A546-4EB5-BA4F-FCEF4F60DD66}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
 	EndGlobalSection
 EndGlobal

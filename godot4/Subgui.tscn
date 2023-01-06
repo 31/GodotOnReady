@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://5dabgdb7il11"]
+
+[node name="Subgui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 253.0
+offset_bottom = 33.0
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 3.0
+offset_right = 115.0
+offset_bottom = 29.0
+size_flags_vertical = 5
+text = "A simple label"
+
+[node name="Label2" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 2.0
+offset_right = 230.0
+offset_bottom = 28.0
+size_flags_vertical = 5
+text = "Another label"

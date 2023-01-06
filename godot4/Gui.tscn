@@ -1,0 +1,121 @@
+[gd_scene load_steps=14 format=3 uid="uid://cd13kx7uxrph3"]
+
+[ext_resource type="Script" path="res://MyGui.cs" id="1"]
+[ext_resource type="Script" path="res://SpawnButton.cs" id="2"]
+[ext_resource type="Script" path="res://SpawnButtonDerived.cs" id="3"]
+[ext_resource type="Script" path="res://SpawnButtonConcrete.cs" id="4"]
+[ext_resource type="Script" path="res://NodeImplementingIShout.cs" id="5"]
+[ext_resource type="Script" path="res://FetchByGenericButton.cs" id="6"]
+[ext_resource type="Script" path="res://FetchByGenericInterfaceConcrete.cs" id="7"]
+[ext_resource type="Script" path="res://RandomNumberLabel.cs" id="8"]
+[ext_resource type="Script" path="res://Provider.cs" id="9"]
+[ext_resource type="Script" path="res://Consumer.cs" id="10"]
+[ext_resource type="Script" path="res://ReadmeEx.cs" id="11"]
+
+[sub_resource type="Gradient" id="1"]
+
+[sub_resource type="GradientTexture1D" id="2"]
+gradient = SubResource("1")
+width = 96
+
+[node name="Gui" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+script = ExtResource("1")
+LabelSomewhereMask = "Somewhere"
+LabelSomewhereVisibleMask = "Somewhere"
+MyTreePath = NodePath("Tree")
+
+[node name="Tree" type="Tree" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+caret_blink = true
+
+[node name="Somewhere" type="Label" parent="LineEdit"]
+layout_mode = 0
+offset_left = 295.0
+offset_top = -115.0
+offset_right = 484.0
+offset_bottom = -63.0
+text = "This label is somewhere!
+And more!"
+
+[node name="Label" type="Label" parent="LineEdit"]
+layout_mode = 0
+offset_left = 525.0
+offset_top = -215.0
+offset_right = 696.0
+offset_bottom = -189.0
+text = "Random number here"
+script = ExtResource("8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Spawn"
+script = ExtResource("2")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HBoxContainer2"]
+layout_mode = 2
+text = "Spawn"
+script = ExtResource("3")
+OtherPath = NodePath("../../HBoxContainer")
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="HBoxContainer3"]
+layout_mode = 2
+text = "Spawn"
+script = ExtResource("4")
+
+[node name="ExampleShoutImplementer" type="Node" parent="."]
+script = ExtResource("5")
+
+[node name="FetchByGeneric" type="Node" parent="."]
+script = ExtResource("6")
+FPath = NodePath("../HBoxContainer/Button")
+
+[node name="FetchByGenericInterface" type="Node" parent="."]
+script = ExtResource("7")
+FPath = NodePath("../ExampleShoutImplementer")
+
+[node name="GradientSprite" type="Sprite2D" parent="."]
+position = Vector2(589, 54)
+scale = Vector2(1, 32)
+texture = SubResource("2")
+
+[node name="Provider" type="Control" parent="."]
+layout_mode = 2
+script = ExtResource("9")
+
+[node name="Consumer" type="Control" parent="Provider"]
+layout_mode = 1
+anchors_preset = 0
+script = ExtResource("10")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+script = ExtResource("11")
+ButtonPath = NodePath("Button")
+
+[node name="Button" type="Button" parent="PanelContainer"]
+layout_mode = 2
+
+[connection signal="pressed" from="HBoxContainer/Button" to="HBoxContainer/Button" method="OnPress"]
+[connection signal="pressed" from="HBoxContainer2/Button" to="HBoxContainer2/Button" method="OnPress"]
+[connection signal="pressed" from="HBoxContainer3/Button" to="HBoxContainer3/Button" method="OnPress"]

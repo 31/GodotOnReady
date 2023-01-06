@@ -2,6 +2,7 @@ syntax: glob
 
 .import/
 .mono/
+.godot/
 
 ## Based on https://github.com/github/gitignore/blob/master/VisualStudio.gitignore ##
 
