@@ -1,4 +1,4 @@
-﻿using GodotOnReady.Generator.Util;
+using GodotOnReady.Generator.Util;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 
@@ -18,13 +18,21 @@ namespace GodotOnReady.Generator.Additions
 
 			g.Line();
 			g.Line(export, "public ", Member.Type.ToFullDisplayString(), " ", ExportPropertyName);
+
+			string setHasBeenSet = IsGeneratingAssignment
+				? "_hasBeenSet" + Member.Name + " = true; "
+				: "";
+
 			g.BlockBrace(() =>
 			{
 				g.Line("get => ", Member.Name, ";");
-				g.Line("set { _hasBeenSet", Member.Name, " = true; ", Member.Name, " = value; }");
+				g.Line("set { ", setHasBeenSet, Member.Name, " = value; }");
 			});
 
-			g.Line("private bool _hasBeenSet", Member.Name, ";");
+			if (IsGeneratingAssignment)
+			{
+				g.Line("private bool _hasBeenSet", Member.Name, ";");
+			}
 		};
 
 		public override Action<SourceStringBuilder>? ConstructorStatementWriter =>
