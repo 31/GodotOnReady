@@ -24,6 +24,11 @@
 
 			// Handle field name convention: _ prefix with lowercase name.
 			string pathName = Member.Name.TrimStart('_');
+			if (pathName.Length == 0)
+			{
+				pathName = Member.Name;
+			}
+
 			pathName =
 				pathName[0].ToString().ToUpperInvariant() +
 				pathName.Substring(1);
