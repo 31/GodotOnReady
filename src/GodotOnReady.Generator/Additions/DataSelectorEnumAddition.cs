@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 
 namespace GodotOnReady.Generator.Additions
@@ -35,7 +36,8 @@ namespace GodotOnReady.Generator.Additions
 				{
 					foreach (var field in Fields)
 					{
-						g.Line("case ", EnumName, ".", field.Name, ": return ", field.Name, ";");
+						string fieldName = EscapeIdentifier(field.Name);
+						g.Line("case ", EnumName, ".", fieldName, ": return ", fieldName, ";");
 					}
 				});
 				g.Line("throw new ArgumentOutOfRangeException(\"key\");");
@@ -50,7 +52,7 @@ namespace GodotOnReady.Generator.Additions
 			{
 				foreach (var field in Fields)
 				{
-					g.Line(field.Name, ",");
+					g.Line(EscapeIdentifier(field.Name), ",");
 				}
 			});
 
@@ -62,5 +64,7 @@ namespace GodotOnReady.Generator.Additions
 					" GetData(this ", EnumName, " v) => ", Class.Name, ".Get(v);");
 			});
 		};
+		private static string EscapeIdentifier(string name) =>
+			SyntaxFacts.GetKeywordKind(name) == SyntaxKind.None ? name : "@" + name;
 	}
 }
